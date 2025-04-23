@@ -1,6 +1,6 @@
-import { updateAI } from './hide.js';
+//import { updateAI } from './hide.js';
 
-var canvas = document.createElement('canvas');
+var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 document.body.appendChild(canvas);
 canvas.width = 600;
@@ -9,6 +9,13 @@ canvas.height = 400;
 var player = { x: 0, y: 0, width: 20, height: 100, dy: 2 };
 var ai = { x: 580, y: 0, width: 20, height: 100, dy: 1 };
 var ball = { x: 300, y: 200, width: 20, height: 20, dx: 2, dy: 2 };
+
+function updateAI(ai,ball) {
+    // If the ball is below the center of the AI paddle, move the AI paddle down
+    if (ai.y + ai.height / 2 < ball.y) ai.y += ai.dy;
+    // If the ball is above the center of the AI paddle, move the AI paddle up
+    if (ai.y + ai.height / 2 > ball.y) ai.y -= ai.dy;
+}
 
 function update() {
     // Prevents the player from moving above the top edge of the canvas
