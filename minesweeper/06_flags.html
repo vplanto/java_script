@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minesweeper Step 6</title>
+  <style>
+    .cell {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 18px;
+      line-height: 30px;
+      cursor: pointer;
+      background: #ccc;
+    }
+    .row { line-height: 0; }
+  </style>
+</head>
+<body>
+  <h3>Step 6: Flagging Support</h3>
+  <div id="board"></div>
+  <script>
+    const rows = 5, cols = 5;
+    const boardEl = document.getElementById('board');
+    let board = [];
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      for (let j = 0; j < cols; j++) {
+        // Each cell now tracks mine, revealed flag, flagged flag, and adjacent count.
+        board[i][j] = { mine: false, revealed: false, flagged: false, adjacent: 0 };
+        const cellEl = document.createElement('div');
+        cellEl.className = 'cell';
+        cellEl.id = `cell-${i}-${j}`;
+        cellEl.addEventListener('click', function(e) {
+          // If shift is held (or you can choose another modifier), toggle flag
+          if (e.shiftKey && !board[i][j].revealed) {
+            board[i][j].flagged = !board[i][j].flagged;
+            cellEl.textContent = board[i][j].flagged ? "🚩" : "";
+            return;
+          }
+          revealCell(i, j);
+        });
+        rowEl.appendChild(cellEl);
+      }
+      boardEl.appendChild(rowEl);
+    }
+
+    // Place mines randomly
+    let minesToPlace = 5;
+    while (minesToPlace > 0) {
+      let i = Math.floor(Math.random() * rows);
+      let j = Math.floor(Math.random() * cols);
+      if (!board[i][j].mine) {
+        board[i][j].mine = true;
+        minesToPlace--;
+      }
+    }
+
+    // Calculate adjacent mine counts for non-mine cells.
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        if (!board[i][j].mine) {
+          let count = 0;
+          for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+              let ni = i + x, nj = j + y;
+              if (ni >= 0 && ni < rows && nj >= 0 && nj < cols && board[ni][nj].mine) {
+                count++;
+              }
+            }
+          }
+          board[i][j].adjacent = count;
+        }
+      }
+    }
+
+    function revealCell(i, j) {
+      // Bounds check and ignore if already revealed or flagged.
+      if (i < 0 || i >= rows || j < 0 || j >= cols) return;
+      if (board[i][j].revealed || board[i][j].flagged) return;
+      board[i][j].revealed = true;
+      const cellEl = document.getElementById(`cell-${i}-${j}`);
+      cellEl.style.background = '#eee';
+      if (board[i][j].mine) {
+        cellEl.textContent = "💣";
+        return;
+      }
+      if (board[i][j].adjacent > 0) {
+        cellEl.textContent = board[i][j].adjacent;
+      } else {
+        // Flood fill: reveal neighbors if no adjacent mines.
+        for (let x = -1; x <= 1; x++) {
+          for (let y = -1; y <= 1; y++) {
+            if (x === 0 && y === 0) continue;
+            revealCell(i + x, j + y);
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

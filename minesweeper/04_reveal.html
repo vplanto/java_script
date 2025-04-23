@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minesweeper Step 4</title>
+  <style>
+    .cell {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 18px;
+      line-height: 30px;
+      cursor: pointer;
+      background: #ccc;
+    }
+    .row { line-height: 0; }
+  </style>
+</head>
+<body>
+  <h3>Step 4: Reveal on Click</h3>
+  <div id="board"></div>
+  <script>
+    const rows = 5, cols = 5;
+    const boardEl = document.getElementById('board');
+    let board = [];
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      for (let j = 0; j < cols; j++) {
+        board[i][j] = { mine: false, revealed: false };
+        const cellEl = document.createElement('div');
+        cellEl.className = 'cell';
+        cellEl.id = `cell-${i}-${j}`;
+        cellEl.addEventListener('click', function() {
+          revealCell(i, j);
+        });
+        rowEl.appendChild(cellEl);
+      }
+      boardEl.appendChild(rowEl);
+    }
+
+    // Randomly place 5 mines
+    let minesToPlace = 5;
+    while (minesToPlace > 0) {
+      let i = Math.floor(Math.random() * rows);
+      let j = Math.floor(Math.random() * cols);
+      if (!board[i][j].mine) {
+        board[i][j].mine = true;
+        minesToPlace--;
+      }
+    }
+
+    function revealCell(i, j) {
+      if (board[i][j].revealed) return;
+      board[i][j].revealed = true;
+      const cellEl = document.getElementById(`cell-${i}-${j}`);
+      cellEl.style.background = '#eee';
+      if (board[i][j].mine) {
+        cellEl.textContent = "💣";
+      } else {
+        cellEl.textContent = "";
+      }
+    }
+  </script>
+</body>
+</html>

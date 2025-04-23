@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minesweeper Step 1</title>
+  <style>
+    .cell {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 18px;
+      line-height: 30px;
+    }
+    .row { line-height: 0; }
+  </style>
+</head>
+<body>
+  <h3>Step 1: Empty Board</h3>
+  <div id="board"></div>
+  <script>
+    const rows = 5, cols = 5;
+    const boardEl = document.getElementById('board');
+    let board = []; // will hold our game state
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      for (let j = 0; j < cols; j++) {
+        // Each cell has some default properties
+        board[i][j] = { mine: false, revealed: false };
+        const cellEl = document.createElement('span');
+        cellEl.className = 'cell';
+        cellEl.id = `cell-${i}-${j}`;
+        rowEl.appendChild(cellEl);
+      }
+      boardEl.appendChild(rowEl);
+    }
+  </script>
+</body>
+</html>

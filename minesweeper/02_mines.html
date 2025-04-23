@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minesweeper Step 2</title>
+  <style>
+    .cell {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 18px;
+      line-height: 30px;
+    }
+    .row { line-height: 0; }
+  </style>
+</head>
+<body>
+  <h3>Step 2: Board with Visible Mines</h3>
+  <div id="board"></div>
+  <script>
+    const rows = 5, cols = 5;
+    const boardEl = document.getElementById('board');
+    let board = [];
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      for (let j = 0; j < cols; j++) {
+        board[i][j] = { mine: false };
+        const cellEl = document.createElement('span');
+        cellEl.className = 'cell';
+        cellEl.id = `cell-${i}-${j}`;
+        rowEl.appendChild(cellEl);
+      }
+      boardEl.appendChild(rowEl);
+    }
+
+    // Place mines randomly and immediately show them
+    let minesToPlace = 5;
+    while (minesToPlace > 0) {
+      let i = Math.floor(Math.random() * rows);
+      let j = Math.floor(Math.random() * cols);
+      if (!board[i][j].mine) {
+        board[i][j].mine = true;
+        const cellEl = document.getElementById(`cell-${i}-${j}`);
+        cellEl.textContent = "💣";
+        minesToPlace--;
+      }
+    }
+  </script>
+</body>
+</html>

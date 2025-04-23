@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minesweeper Step 3</title>
+  <style>
+    .cell {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 18px;
+      line-height: 30px;
+      cursor: pointer;
+      background: #ccc;
+    }
+    .row { line-height: 0; }
+  </style>
+</head>
+<body>
+  <h3>Step 3: Board with Hidden Mines</h3>
+  <div id="board"></div>
+  <script>
+    const rows = 5, cols = 5;
+    const boardEl = document.getElementById('board');
+    let board = [];
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      for (let j = 0; j < cols; j++) {
+        board[i][j] = { mine: false, revealed: false };
+        const cellEl = document.createElement('div');
+        cellEl.className = 'cell';
+        cellEl.id = `cell-${i}-${j}`;
+        rowEl.appendChild(cellEl);
+      }
+      boardEl.appendChild(rowEl);
+    }
+
+    // Place mines randomly (the mine data is set but not revealed)
+    let minesToPlace = 5;
+    while (minesToPlace > 0) {
+      let i = Math.floor(Math.random() * rows);
+      let j = Math.floor(Math.random() * cols);
+      if (!board[i][j].mine) {
+        board[i][j].mine = true;
+        minesToPlace--;
+      }
+    }
+  </script>
+</body>
+</html>

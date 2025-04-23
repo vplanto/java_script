@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Minesweeper Final: External JS & Win Condition</title>
+  <style>
+    .cell {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 18px;
+      line-height: 30px;
+      cursor: pointer;
+      background: #ccc;
+    }
+    .row { line-height: 0; }
+    #counter {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+    #game-status {
+      margin: 10px 0;
+      font-size: 20px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h3>Minesweeper Final: External JS & Win Condition</h3>
+  <div id="counter"></div>
+  <div id="game-status"></div>
+  <div id="board"></div>
+  
+  <!-- External JavaScript -->
+  <script src="minesweeper.js"></script>
+</body>
+</html>

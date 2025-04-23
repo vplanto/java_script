@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minesweeper Step 7: Global Mines Left Counter</title>
+  <style>
+    .cell {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 18px;
+      line-height: 30px;
+      cursor: pointer;
+      background: #ccc;
+    }
+    .row { line-height: 0; }
+    #counter {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h3>Step 7: Global Mines Left Counter</h3>
+  <div id="counter"></div>
+  <div id="board"></div>
+  <script>
+    const rows = 5, cols = 5;
+    const totalMines = 5;
+    let minesLeft = totalMines;
+    
+    const boardEl = document.getElementById('board');
+    const counterEl = document.getElementById('counter');
+    counterEl.textContent = "Mines left: " + minesLeft;
+    
+    let board = [];
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      for (let j = 0; j < cols; j++) {
+        // Each cell tracks mine, revealed, flagged, and adjacent mine count.
+        board[i][j] = { mine: false, revealed: false, flagged: false, adjacent: 0 };
+        const cellEl = document.createElement('div');
+        cellEl.className = 'cell';
+        cellEl.id = `cell-${i}-${j}`;
+        
+        cellEl.addEventListener('click', function(e) {
+          // Use shift+click to flag/unflag a cell.
+          if (e.shiftKey && !board[i][j].revealed) {
+            board[i][j].flagged = !board[i][j].flagged;
+            cellEl.textContent = board[i][j].flagged ? "🚩" : "";
+            // Update mines left counter.
+            if (board[i][j].flagged) {
+              minesLeft--;
+            } else {
+              minesLeft++;
+            }
+            counterEl.textContent = "Mines left: " + minesLeft;
+            return;
+          }
+          // Normal click reveals the cell.
+          revealCell(i, j);
+        });
+        rowEl.appendChild(cellEl);
+      }
+      boardEl.appendChild(rowEl);
+    }
+
+    // Randomly place mines.
+    let minesToPlace = totalMines;
+    while (minesToPlace > 0) {
+      let i = Math.floor(Math.random() * rows);
+      let j = Math.floor(Math.random() * cols);
+      if (!board[i][j].mine) {
+        board[i][j].mine = true;
+        minesToPlace--;
+      }
+    }
+
+    // Calculate the number of adjacent mines for non-mine cells.
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        if (!board[i][j].mine) {
+          let count = 0;
+          for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+              let ni = i + x, nj = j + y;
+              if (ni >= 0 && ni < rows && nj >= 0 && nj < cols && board[ni][nj].mine) {
+                count++;
+              }
+            }
+          }
+          board[i][j].adjacent = count;
+        }
+      }
+    }
+
+    // Reveal function with flood fill behavior.
+    function revealCell(i, j) {
+      if (i < 0 || i >= rows || j < 0 || j >= cols) return;
+      if (board[i][j].revealed || board[i][j].flagged) return;
+      board[i][j].revealed = true;
+      const cellEl = document.getElementById(`cell-${i}-${j}`);
+      cellEl.style.background = '#eee';
+      if (board[i][j].mine) {
+        cellEl.textContent = "💣";
+        return;
+      }
+      if (board[i][j].adjacent > 0) {
+        cellEl.textContent = board[i][j].adjacent;
+      } else {
+        // Flood fill: reveal surrounding cells.
+        for (let x = -1; x <= 1; x++) {
+          for (let y = -1; y <= 1; y++) {
+            if (x === 0 && y === 0) continue;
+            revealCell(i + x, j + y);
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>
+

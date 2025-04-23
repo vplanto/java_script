@@ -26,7 +26,7 @@ function calcPI() {
   const ctx = canvas.getContext("2d");
   let side = radius * 2;
 
-  let totalPoints = 10000000;
+  let totalPoints = 500;
   let circlePoints = 0;
 
   for (let i = 0; i < totalPoints; i++) {
