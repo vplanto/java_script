@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гра "Камінь, Ножиці, Папір,..."</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Гра "Камінь, Ножиці, Папір,..."</h1>
+
+        <section id="auth-section" class="active-section">
+            <h2>Реєстрація / Вхід</h2>
+            <div class="auth-forms">
+                <div class="form-card">
+                    <h3>Реєстрація</h3>
+                    <form id="registration-form">
+                        <label for="reg-pib">ПІБ:</label>
+                        <input type="text" id="reg-pib" required>
+
+                        <label for="reg-dob">Дата народження:</label>
+                        <input type="date" id="reg-dob" required>
+
+                        <label for="reg-email">Електронна пошта:</label>
+                        <input type="email" id="reg-email" required>
+
+                        <label for="reg-nickname">Нік (логін):</label>
+                        <input type="text" id="reg-nickname" required>
+
+                        <label for="reg-password">Пароль:</label>
+                        <input type="password" id="reg-password" required>
+
+                        <button type="submit">Зареєструватися</button>
+                    </form>
+                    <p id="registration-message" class="message"></p>
+                </div>
+
+                <div class="form-card">
+                    <h3>Вхід</h3>
+                    <form id="login-form">
+                        <label for="login-nickname">Нік (логін):</label>
+                        <input type="text" id="login-nickname" required>
+
+                        <label for="login-password">Пароль:</label>
+                        <input type="password" id="login-password" required>
+
+                        <button type="submit">Увійти</button>
+                    </form>
+                    <p id="login-message" class="message"></p>
+                </div>
+            </div>
+            <div class="data-export">
+                <h3>Експорт даних (для демонстрації)</h3>
+                <button id="download-json">Завантажити JSON</button>
+                <button id="download-xml">Завантажити XML</button>
+            </div>
+        </section>
+
+        <section id="welcome-section" class="hidden-section">
+            <h2 id="welcome-message"></h2>
+            <div class="user-stats">
+                <h3>Ваша статистика:</h3>
+                <p>Перемог: <span id="stats-wins">0</span></p>
+                <p>Поразок: <span id="stats-losses">0</span></p>
+                <p>Нічиїх: <span id="stats-ties">0</span></p>
+                <p>Загалом ігор: <span id="stats-total-games">0</span></p>
+            </div>
+            <button id="start-new-game-btn">Розпочати нову гру</button>
+            <button id="view-game-history-btn">Переглянути історію ігор</button>
+            <button id="logout-btn">Вийти</button>
+        </section>
+
+        <section id="game-setup-section" class="hidden-section">
+            <h2>Налаштування гри</h2>
+            <label for="ai-level">Рівень робота:</label>
+            <select id="ai-level">
+                <option value="simple">Простий (детермінований)</option>
+                <option value="stochastic">Середній (стохастичний)</option>
+                <option value="adaptive">Складний (адаптивний)</option>
+                <option value="super">Супер-робот (оптимальний стохастичний)</option>
+            </select>
+
+            <label for="game-items-select">Предмети гри:</label>
+            <select id="game-items-select">
+                <option value="rps">Камінь, Ножиці, Папір</option>
+                <option value="rpsls">Камінь, Ножиці, Папір, Ящірка, Спок</option>
+            </select>
+
+            <label for="num-rounds">Кількість раундів:</label>
+            <input type="number" id="num-rounds" value="3" min="1">
+
+            <button id="start-game-btn">Почати гру</button>
+            <button id="back-to-welcome-btn">Назад</button>
+        </section>
+
+        <section id="game-play-section" class="hidden-section">
+            <h2>Гра</h2>
+            <p>Раунд: <span id="current-round-display">1</span> / <span id="total-rounds-display">3</span></p>
+            <div class="scoreboard">
+                <p>Гравець: <span id="player-score">0</span></p>
+                <p>Робот: <span id="computer-score">0</span></p>
+            </div>
+
+            <div class="choices">
+                <p>Ваш вибір:</p>
+                <div id="player-choice-buttons">
+                    </div>
+            </div>
+            <p id="round-result" class="message"></p>
+            <p>Вибір гравця: <span id="player-choice-display"></span></p>
+            <p>Вибір робота: <span id="computer-choice-display"></span></p>
+        </section>
+
+        <section id="game-results-section" class="hidden-section">
+            <h2>Результати гри</h2>
+            <p id="final-game-result"></p>
+            <button id="play-again-btn">Грати ще раз</button>
+            <button id="back-to-welcome-from-results-btn">Назад до головного меню</button>
+        </section>
+
+        <section id="game-history-section" class="hidden-section">
+            <h2>Історія ігор</h2>
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Рівень Робота</th>
+                        <th>Раундів</th>
+                        <th>Результат</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+            <button id="back-from-history-btn">Назад до головного меню</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
