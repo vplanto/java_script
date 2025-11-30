@@ -28,7 +28,7 @@
       const rowEl = document.createElement('div');
       rowEl.className = 'row';
       for (let j = 0; j < cols; j++) {
-        board[i][j] = { mine: false };
+        board[i][j] = { mine: false, revealed: false };
         const cellEl = document.createElement('span');
         cellEl.className = 'cell';
         cellEl.id = `cell-${i}-${j}`;
@@ -40,7 +40,7 @@
     // Place mines randomly and immediately show them
     let minesToPlace = 5;
     while (minesToPlace > 0) {
-      let i = Math.floor(Math.random() * rows);
+      let i = Math.floor(Math.random() * rows); // rand -> [0,1) * 5 -> [0,5) -> floor -> 0, 1, 2, 3, 4
       let j = Math.floor(Math.random() * cols);
       if (!board[i][j].mine) {
         board[i][j].mine = true;

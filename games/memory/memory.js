@@ -3,7 +3,7 @@ const gameBoard = document.getElementById('game-board');
 const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'pink', 'orange', 'cyan'];
 let cards = [...colors, ...colors].map(color => ({ color, flipped: false }));
 
-cards.sort(() => Math.random() - 0.5);
+cards.sort(() => Math.random() - 0.5); // [0,1) -> [-0.5, 0.5)
 
 let firstCard = null;
 let secondCard = null;

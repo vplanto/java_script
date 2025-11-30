@@ -1,5 +1,5 @@
-const rows = 5, cols = 5;
-const totalMines = 5;
+const rows = 15, cols = 15;
+const totalMines = 40;
 let minesLeft = totalMines;
 let gameOver = false;
 
