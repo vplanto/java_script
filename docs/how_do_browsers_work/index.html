@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>How Browsers Work: Visualization</title>
+        <style>
+            :root {
+                --bg: #1e1e1e;
+                --text: #e0e0e0;
+                --accent: #bb86fc;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: var(--bg);
+                color: var(--text);
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            /* Container */
+            .carousel-container {
+                position: relative;
+                width: 90%;
+                max-width: 1200px;
+                height: 80vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #000;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                border: 1px solid #333;
+            }
+
+            /* Images */
+            .slide {
+                max-width: 100%;
+                max-height: 100%;
+                display: none; /* Hidden by default */
+                object-fit: contain;
+                animation: fadeIn 0.3s ease;
+            }
+            .slide.active {
+                display: block;
+            }
+
+            /* Controls */
+            .btn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                border: none;
+                padding: 15px 20px;
+                font-size: 24px;
+                cursor: pointer;
+                border-radius: 8px;
+                backdrop-filter: blur(5px);
+                transition: background 0.2s;
+                z-index: 10;
+            }
+            .btn:hover {
+                background: rgba(187, 134, 252, 0.4);
+            }
+            .prev {
+                left: 20px;
+            }
+            .next {
+                right: 20px;
+            }
+
+            /* Status & Loading */
+            .status-bar {
+                margin-top: 15px;
+                font-family: monospace;
+                color: #888;
+            }
+            .loader {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: var(--accent);
+                font-size: 1.5rem;
+                display: none;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0.8;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="carousel-container">
+            <div id="loader" class="loader">Scanning attachments...</div>
+            <img id="mainImage" class="slide active" src="" alt="Slide" />
+
+            <button class="btn prev" onclick="changeSlide(-1)">❮</button>
+            <button class="btn next" onclick="changeSlide(1)">❯</button>
+        </div>
+
+        <div class="status-bar">
+            Slide <span id="currentIdx">0</span> / <span id="totalIdx">0</span>
+            <br />
+            <span style="font-size: 0.8em; opacity: 0.6"
+                >(Auto-loaded from /attachments/*.png)</span
+            >
+        </div>
+
+        <script>
+            // --- CONFIGURATION ---
+            const FOLDER_PATH = "./attachments/";
+            const MAX_SCAN_LIMIT = 50; // Запобіжник, щоб не шукати до безкінечності
+
+            // --- STATE ---
+            let slides = [];
+            let currentIndex = 0;
+            const imgEl = document.getElementById("mainImage");
+            const currentIdxEl = document.getElementById("currentIdx");
+            const totalIdxEl = document.getElementById("totalIdx");
+            const loader = document.getElementById("loader");
+
+            // --- AUTO-DISCOVERY LOGIC ---
+            async function scanFolder() {
+                loader.style.display = "block";
+
+                let index = 1;
+                let keepScanning = true;
+
+                while (keepScanning && index <= MAX_SCAN_LIMIT) {
+                    // ЗМІНА ТУТ: додаємо padStart(2, '0')
+                    // 1 -> "01.png"
+                    // 9 -> "09.png"
+                    // 10 -> "10.png"
+                    const filename = String(index).padStart(2, "0") + ".png";
+
+                    const path = FOLDER_PATH + filename;
+
+                    try {
+                        const response = await fetch(path, { method: "HEAD" });
+
+                        if (response.ok) {
+                            slides.push(path);
+                            if (slides.length === 1) renderSlide(0);
+                            totalIdxEl.innerText = slides.length;
+                        } else {
+                            keepScanning = false;
+                        }
+                    } catch (e) {
+                        keepScanning = false;
+                    }
+                    index++;
+                }
+
+                loader.style.display = "none";
+                if (slides.length === 0) {
+                    alert("Не знайдено файлів: 01.png, 02.png...");
+                }
+            }
+
+            // --- CAROUSEL LOGIC ---
+            function renderSlide(idx) {
+                if (slides.length === 0) return;
+                imgEl.src = slides[idx];
+                currentIdxEl.innerText = idx + 1;
+                totalIdxEl.innerText = slides.length;
+            }
+
+            function changeSlide(step) {
+                if (slides.length === 0) return;
+                currentIndex += step;
+
+                // Loop functionality
+                if (currentIndex >= slides.length) currentIndex = 0;
+                if (currentIndex < 0) currentIndex = slides.length - 1;
+
+                renderSlide(currentIndex);
+            }
+
+            // --- KEYBOARD CONTROLS ---
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowRight" || e.key === " ") changeSlide(1);
+                if (e.key === "ArrowLeft") changeSlide(-1);
+            });
+
+            // Start
+            scanFolder();
+        </script>
+    </body>
+</html>
