@@ -1,6 +1,6 @@
 # TODO: Course Modernization Plan (Web Engineering)
 
-## 🎯 Meta Goals
+## Meta Goals
 - [ ] **Enforce Modern Syntax:** Заборонити `var` на рівні правил прийому робіт. Тільки `const` / `let`.
 - [ ] **Shift to Modules:** Відмовитися від глобального Scope у браузері. Всі скрипти мають бути `<script type="module">`.
 
@@ -48,7 +48,7 @@
 
 ---
 
-## 🛡️ Module 5: Security & Final Project
+## Module 5: Security & Final Project
 ### Воркшоп 7: Auth & Security
 - [ ] **Додати Task: Client-Side Form Validation.**
     - Валідація *до* відправки запиту (UX + Security layer 1).

@@ -56,6 +56,43 @@
 
 ---
 
+## 📚 Програма курсу
+
+### Модуль 0: Підготовка
+- [00. Маніфест: Інженер vs Кодер](docs/00_manifesto.md) — Філософія курсу в епоху AI
+- [Setup: Налаштування середовища](docs/n01_setup.md) — VS Code, Node.js, Git
+- [Git Basics](docs/n03_git_basics.md) — Контроль версій та GitHub Flow
+- [Markdown](docs/n02_markdown.md) — Документація як код
+
+### Модуль 1: Browser Internals
+- [01. HTML & DOM](docs/01_html_dom.md) — Браузер як C++ програма, DOM Tree, Forms
+- [02. CSS Layout](docs/02_css_layout.md) — Box Model, Positioning, Flexbox/Grid
+- [03. JavaScript Runtime](docs/03_js_core.md) — V8 Engine, Stack vs Heap, References
+- [03a. OS Basics](docs/03a_os_basics.md) — Процеси, Потоки, Web Workers
+- [04. Browser Internals](docs/04_browser_internals.md) — Main Thread, Event Loop, Rendering Pipeline
+
+### Модуль 2: Data & Networking
+- [05. JSON & LocalStorage](docs/05_json_data.md) — Серіалізація, Persistence
+- [06. Networking (OSI Model)](docs/06_networking_osi.md) — TCP/IP, DNS, HTTPS
+- [07. HTTP & REST](docs/07_http_rest.md) — API Design, Status Codes, Fetch
+- [08. Security](docs/08_security.md) — XSS, CSRF, CORS, Content Security Policy
+
+### Воркшопи (Практичні завдання)
+1. [Bad UI Battle](docs/workshops/ws01_bad_ui.md) — DOM Events та хакерство з UX
+2. [Monte Carlo & Web Workers](docs/workshops/ws02_monte_carlo.md) — Багатопотоковість
+3. [DOM Optimization](docs/workshops/ws03_dom_optimization.md) — Virtual DOM підхід
+4. [Game Loop (Pong)](docs/workshops/ws04_game_loop.md) — 60 FPS фізика
+5. [Minesweeper](docs/workshops/ws05_minesweeper.md) — Рекурсія та розумний UI
+6. [Data Analytics](docs/workshops/ws06_data_analytics.md) — JSON/XML Експорт
+7. [Auth & Security](docs/workshops/ws07_auth_security.md) — Хешування (SHA-256)
+8. [Game Logic (AI)](docs/workshops/ws08_game_logic.md) — Алгоритми рішень
+9. [Weather API](docs/workshops/ws09_weather_api.md) — Fetch та REST
+
+### Довідкові матеріали
+- [FAQ & Troubleshooting](docs/faq_troubleshooting.md) — Типові проблеми та рішення
+
+---
+
 ## 🚀 Як проходити цей курс
 
 1.  **Почніть з теорії:** Прочитайте [Маніфест](docs/00_manifesto.md).

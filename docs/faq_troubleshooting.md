@@ -56,13 +56,22 @@ const clone = structuredClone(user);
 **Рішення:**
 
 ```javascript
-// ❌
+// ❌ Без await
 const hash = hashPassword("123");
 console.log(hash); // Promise
 
-// ✅
+// ✅ З await
 const hash = await hashPassword("123");
 console.log(hash); // "a665..."
+
+// ❌ Fetch без await
+const data = fetch('https://api.example.com/users');
+console.log(data); // Promise { <pending> }
+
+// ✅ Fetch з await
+const response = await fetch('https://api.example.com/users');
+const data = await response.json();
+console.log(data); // { users: [...] }
 ```
 
 -----

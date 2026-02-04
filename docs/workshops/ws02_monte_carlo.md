@@ -44,7 +44,7 @@ $$\pi \approx 4 \times \frac{\text{Точки в колі}}{\text{Всього �
   <script src="script.js"></script>
 </body>
 </html>
-````
+```
 
 ### `script.js` (Bad Practice)
 

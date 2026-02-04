@@ -51,7 +51,24 @@ JS не має простого "stringify" для XML. Вам треба нап
 ```javascript
 function jsonToXml(data, root = 'root') {
     let xml = `<${root}>`;
-    // ... ваша рекурсивна магія ...
+    
+    for (const key in data) {
+        const value = data[key];
+        
+        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+            // Рекурсія для вкладених об'єктів
+            xml += jsonToXml(value, key);
+        } else if (Array.isArray(value)) {
+            // Обробка масивів
+            value.forEach(item => {
+                xml += jsonToXml(item, key);
+            });
+        } else {
+            // Примітивне значення
+            xml += `<${key}>${value}</${key}>`;
+        }
+    }
+    
     xml += `</${root}>`;
     return xml;
 }
