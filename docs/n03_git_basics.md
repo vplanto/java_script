@@ -48,14 +48,17 @@ git push
 2.  Натисніть зелену кнопку **Code**, скопіюйте посилання (`https://github.com/...`).
 3.  Відкрийте термінал (VS Code -\> Terminal -\> New Terminal).
 4.  Напишіть:
+
     ```bash
-    git clone [https://github.com/ВАШ_НІК/web-engineering-course.git](https://github.com/ВАШ_НІК/web-engineering-course.git)
+    git clone https://github.com/ВАШ_НІК/web-engineering-course.git
     ```
 5.  Зайдіть у папку:
+
     ```bash
     cd web-engineering-course
     ```
 6.  Відкрийте цю папку в редакторі:
+
     ```bash
     code .
     ```

@@ -108,7 +108,7 @@ dist/
 
 ```bash
 # 1. Завантажуємо код
-git clone [https://github.com/ВАШ_НІК/hive-mind-starter.git](https://github.com/ВАШ_НІК/hive-mind-starter.git)
+git clone https://github.com/ВАШ_НІК/hive-mind-starter.git
 
 # 2. ЗАХОДИМО В ПАПКУ (Критично важливо!)
 cd hive-mind-starter
@@ -117,6 +117,7 @@ cd hive-mind-starter
 
 
 3. **Install & Run (Збірка і Запуск):**
+
 ```bash
 # 1. Встановлюємо бібліотеки (аналог підключення .lib)
 npm install
