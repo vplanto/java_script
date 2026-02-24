@@ -1,4 +1,4 @@
-# Лекція 2: CSS як Система Координат
+# Лекція 2: CSS як система координат
 
 ## Експрес-опитування: Інтуїція
 
@@ -142,3 +142,113 @@ CSS — це мова запитів до DOM-дерева.
       * Дайте їй `position: absolute`.
       * Задайте початкові `top` і `left`.
 4.  Спробуйте в браузері (через DevTools) змінювати `top/left` і дивитись, як вона літає по екрану. Це база для нашого наступного заняття.
+
+---
+
+## Контрольні питання
+
+1. У чому різниця між `box-sizing: content-box` і `box-sizing: border-box`? Яке з них є кращою практикою і чому?
+
+<details>
+<summary>Відповідь</summary>
+
+`content-box` (стандарт за замовчуванням): `width` враховує тільки контент, тому реальна ширина = `width + padding + border`. Це ламає розрахунки при верстці сіток.
+
+`border-box`: `width` включає padding і border — ширина елемента залишається рівно такою, як ви вказали. Ставте `* { box-sizing: border-box; }` першим рядком у будь-якому CSS файлі.
+
+</details>
+
+2. У вас є два `div` один під одним. У першого `margin-bottom: 20px`, у другого `margin-top: 30px`. Який буде відступ між ними?
+
+<details>
+<summary>Відповідь</summary>
+
+**30px**, а не 50px. Це Margin Collapse: вертикальні зовнішні відступи суміжних блоків «зливаються» в один — береться максимальне значення. Це поведінка, успадкована з типографіки.
+
+</details>
+
+3. Елемент має `z-index: 9999`, але він все одно знаходиться під сусіднім елементом. Яка найімовірніша причина?
+
+<details>
+<summary>Відповідь</summary>
+
+Batько цього елемента утворює **Stacking Context** з нижчим `z-index`. `z-index` працює лише всередині свого контексту — він не виштовхує елемент «назовні». Якщо батько знаходиться нижче сусіда батьківського рівня, дитина з будь-яким `z-index` не допоможе.
+
+</details>
+
+4. Чому краще використовувати **CSS Grid** для розкладки сторінки, а не обчислювати позиції через JavaScript?
+
+<details>
+<summary>Відповідь</summary>
+
+JavaScript-розрахунки позицій (`element.style.left = ...`) викликають **Layout Thrashing** — браузер змушений перераховувати геометрію при кожній зміні. CSS Grid — декларативний: ви описуєте структуру, браузер сам розраховує позиції один раз. Простіший код, краша продуктивність.
+
+</details>
+
+5. Поясніть різницю між `position: absolute` і `position: fixed`. У якому випадку використовуєте кожен?
+
+<details>
+<summary>Відповідь</summary>
+
+`absolute` — координати відносно найближчого позиціонованого предка (`relative`/`absolute`/`fixed`). Прокручується разом зі сторінкою. Використання: елементи всередині компонента (tooltip, badge).
+
+`fixed` — координати відносно вікна браузера. Не рухається при прокручуванні. Використання: sticky хедери, модальні вікна, кнопка «нагору».
+
+</details>
+
+
+---
+
+## Слайди: CSS слайди (Лекція 6)
+
+![Слайд 1](attachments/css_lecture/slide-01.png)
+![Слайд 2](attachments/css_lecture/slide-02.png)
+![Слайд 3](attachments/css_lecture/slide-03.png)
+![Слайд 4](attachments/css_lecture/slide-04.png)
+![Слайд 5](attachments/css_lecture/slide-05.png)
+![Слайд 6](attachments/css_lecture/slide-06.png)
+![Слайд 7](attachments/css_lecture/slide-07.png)
+![Слайд 8](attachments/css_lecture/slide-08.png)
+![Слайд 9](attachments/css_lecture/slide-09.png)
+![Слайд 10](attachments/css_lecture/slide-10.png)
+![Слайд 11](attachments/css_lecture/slide-11.png)
+![Слайд 12](attachments/css_lecture/slide-12.png)
+![Слайд 13](attachments/css_lecture/slide-13.png)
+![Слайд 14](attachments/css_lecture/slide-14.png)
+![Слайд 15](attachments/css_lecture/slide-15.png)
+![Слайд 16](attachments/css_lecture/slide-16.png)
+![Слайд 17](attachments/css_lecture/slide-17.png)
+![Слайд 18](attachments/css_lecture/slide-18.png)
+![Слайд 19](attachments/css_lecture/slide-19.png)
+![Слайд 20](attachments/css_lecture/slide-20.png)
+![Слайд 21](attachments/css_lecture/slide-21.png)
+![Слайд 22](attachments/css_lecture/slide-22.png)
+![Слайд 23](attachments/css_lecture/slide-23.png)
+![Слайд 24](attachments/css_lecture/slide-24.png)
+![Слайд 25](attachments/css_lecture/slide-25.png)
+![Слайд 26](attachments/css_lecture/slide-26.png)
+![Слайд 27](attachments/css_lecture/slide-27.png)
+![Слайд 28](attachments/css_lecture/slide-28.png)
+![Слайд 29](attachments/css_lecture/slide-29.png)
+![Слайд 30](attachments/css_lecture/slide-30.png)
+![Слайд 31](attachments/css_lecture/slide-31.png)
+![Слайд 32](attachments/css_lecture/slide-32.png)
+![Слайд 33](attachments/css_lecture/slide-33.png)
+![Слайд 34](attachments/css_lecture/slide-34.png)
+![Слайд 35](attachments/css_lecture/slide-35.png)
+![Слайд 36](attachments/css_lecture/slide-36.png)
+![Слайд 37](attachments/css_lecture/slide-37.png)
+![Слайд 38](attachments/css_lecture/slide-38.png)
+![Слайд 39](attachments/css_lecture/slide-39.png)
+![Слайд 40](attachments/css_lecture/slide-40.png)
+![Слайд 41](attachments/css_lecture/slide-41.png)
+![Слайд 42](attachments/css_lecture/slide-42.png)
+![Слайд 43](attachments/css_lecture/slide-43.png)
+![Слайд 44](attachments/css_lecture/slide-44.png)
+![Слайд 45](attachments/css_lecture/slide-45.png)
+![Слайд 46](attachments/css_lecture/slide-46.png)
+![Слайд 47](attachments/css_lecture/slide-47.png)
+![Слайд 48](attachments/css_lecture/slide-48.png)
+![Слайд 49](attachments/css_lecture/slide-49.png)
+![Слайд 50](attachments/css_lecture/slide-50.png)
+![Слайд 51](attachments/css_lecture/slide-51.png)

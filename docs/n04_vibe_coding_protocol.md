@@ -170,3 +170,61 @@ function processOrder(order) {
 4. [ ] **No "x":** У циклах `forEach`/`map` ітератор має повну назву (`user` замість `u`).
 
 **Пам'ятайте:** Код пишеться для людей, а не для машин. Машині все одно, а вам це ще дебажити о 3-й ночі.
+
+---
+
+## Контрольні питання
+
+1. Яка помилка у цьому коді? Як виправити?
+
+```javascript
+const delay = 30;
+setTimeout(callback, delay);
+```
+
+<details>
+<summary>Відповідь</summary>
+
+`delay = 30` — чого? Секунд? Хвилин? `setTimeout` очікує мілісекунди. Якщо ви мали на увазі 30 секунд, то `delay = 30` викличе callback через 30мс, а не 30 секунд.
+
+Правильно: `const delay_ms = 30000;`
+
+</details>
+
+2. Чому `user.admin` є потенційно небезпечним прапорцем? Як правильно його назвати?
+
+<details>
+<summary>Відповідь</summary>
+
+`user.admin` неоднозначний: це об'єкт AdminProfile? Рядок ролі? Boolean? `if (user.admin)` спрацює для будь-якого truthy значення.
+
+Правильно: `user.isAdmin` (boolean) або `user.role === 'ADMIN'` (enum-порівняння).
+
+</details>
+
+3. AI написав `const res = data.filter(x => x.a > 18).map(i => i.n)`. Що не так з цим кодом?
+
+<details>
+<summary>Відповідь</summary>
+
+`data`, `res`, `x`, `i`, `x.a`, `i.n` — «сміттєві» імена без доменного змісту. Читач не розуміє, що фільтрується і що повертається.
+
+Правильно:
+```javascript
+const adultNames = students
+  .filter(student => student.age > 18)
+  .map(student => student.name);
+```
+
+</details>
+
+4. Чому правило «Boolean змінна має відповідати на питання» — це не лише стиль, а безпека?
+
+<details>
+<summary>Відповідь</summary>
+
+JavaScript — динамічно типізований. `if (user.status)` поверне `true` і для рядка `"Pending"`, і для об'єкта. Умова спрацює там, де не повинна.
+
+`if (user.isActive === true)` або `if (user.status === 'ACTIVE')` виключають цю двозначність. В JS неймінг — єдиний документ, який описує очікуваний тип.
+
+</details>
