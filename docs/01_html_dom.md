@@ -24,11 +24,163 @@ B) `display: none` (елемент прихований)
 
 ---
 
-## 1. Ментальна модель: DOM як Структура Даних
+## 1. HTML Engineering: Синтаксис, Семантика та Структура
+
+Ми розглядаємо HTML не просто як текст, а як інструкцію для парсера та базу для Accessibility Tree.
+
+### 1.1. Анатомія, Коментарі та Порожні Елементи
+
+**HTML Element** — це абстракція, що складається з трьох частин:
+1. **Start Tag:** `<tagname>`
+2. **Content:** Текст або вкладені елементи.
+3. **End Tag:** `</tagname>`
+
+**Коментарі (Comments):**
+Як і в C++, код потребує пояснень або тимчасового відключення блоків. Коментарі не рендеряться в DOM.
+```html
+
+```
+
+**Void Elements (Порожні елементи):**
+Деякі теги технічно не можуть мати контенту, тому їм не потрібен закриваючий тег.
+
+* `<img>` — зображення.
+* `<input>` — поле вводу.
+* `<br>` — розрив рядка.
+* `<hr>` — тематичний розділювач.
+* `<meta>` — метадані.
+
+> **Що буде, якщо між тегами немає тексту?**
+> Якщо це контейнер (наприклад, `<div></div>` або `<span></span>`) без контенту і без заданих розмірів у CSS — він **схлопнеться** в 0x0 пікселів і нічого не відобразиться на екрані.
+
+### 1.2. HTML Entities (Escaping)
+
+У C++ ми використовуємо `\` для екранування спецсимволів. У HTML для цього існують **Entities**.
+Оскільки символи `<` та `>` зарезервовані для синтаксису тегів, ми не можемо просто написати `if (x < y)`.
+
+**Основні сутності:**
+
+* `<` (Less Than) → `&lt;` або `&#60;`
+* `>` (Greater Than) → `&gt;` або `&#62;`
+* `&` (Ampersand) → `&amp;` або `&#38;`
+* `"` (Double Quote) → `&quot;`
+* `'` (Single Quote) → `&apos;`
+
+### 1.3. Collapsing White Space (Згортання пробілів)
+
+Парсер обробляє **White Space** (пробіли, таби, `\n`) за специфічним алгоритмом:
+
+1. **Sequences:** Послідовність пробілів/ентерів згортається в **ОДИН** пробіл.
+2. **Trimming:** Пробіли на початку і в кінці елемента ігноруються.
+
+```html
+<p>
+   Hello       World
+</p>
+
+```
+
+### 1.4. Структурні Компоненти: Списки, Таблиці, Посилання
+
+**Списки (Lists):**
+
+* `<ul>` (Unordered): Маркований список.
+* `<ol>` (Ordered): Нумерований список.
+* `<dl>` (Definition): Словник "Термін (`<dt>`) — Визначення (`<dd>`)".
+
+**Таблиці (Tables):**
+Використовуються **тільки для табличних даних**, а не для верстки макету сторінки (як це робили у 90-х).
+
+* `<table>` — контейнер.
+* `<tr>` (Table Row) — рядок.
+* `<th>` (Table Header) — заголовок стовпця (жирний шрифт, центрування).
+* `<td>` (Table Data) — комірка даних.
+
+**Гіперпосилання (Anchors):**
+Тег `<a>` (Anchor) створює зв'язки між документами.
+
+```html
+<a href="[https://google.com](https://google.com)" target="_blank">Google</a>
+
+<a href="/home"><img src="logo.png"></a>
+
+```
+
+### 1.5. Блокові vs Рядкові (Block vs Inline)
+
+**Block Level (`<div>`, `<p>`, `<section>`)**
+
+* **Поведінка:** Займає всю доступну ширину (width: 100%), починається з нового рядка.
+
+**Inline Level (`<span>`, `<a>`, `<b>`)**
+
+* **Поведінка:** Займає тільки ширину контенту, тече як текст.
+
+### 1.6. Semantic HTML vs Non-Semantic (Div Soup)
+
+**Non-Semantic (`<div>`, `<span>`):**
+Історично розробники використовували `<div>` для всього, додаючи сенс через `id` або `class`. Це називається "Div Soup".
+
+```html
+<div id="header">...</div>
+<div id="nav">...</div>
+<div id="article">...</div>
+
+```
+
+`<div>` нічого не говорить браузеру про вміст. Це просто "мішок" для групування елементів та стилізації через CSS.
+
+**Semantic HTML (HTML5):**
+Використання тегів, які передають **зміст та призначення** контенту.
+
+```html
+<header>...</header>
+<nav>...</nav>
+<article>...</article>
+<footer>...</footer>
+
+```
+
+**Чому це критично (Engineering Perspective):**
+
+1. **SEO (Search Engine Optimization):** Google-бот розуміє, що текст у `<article>` важливіший за текст у `<footer>`.
+2. **Accessibility (A11y):** Скрінрідери для незрячих використовують ці теги для навігації ("Перейти до меню", "Пропустити шапку").
+3. **Visual vs Logical:**
+* `<b>` (Bold) — просто жирний текст (Visual).
+* `<strong>` — логічно важливий текст (Semantic). Скрінрідер змінить інтонацію.
+* `<i>` (Italic) — просто курсив.
+* `<em>` (Emphasis) — логічний акцент.
+
+
+
+### 1.7. Anti-Pattern: Кнопка чи Div?
+
+Ми часто бачимо такий код:
+
+```html
+<div onclick="login()" class="btn">Login</div>
+
+```
+
+**Чому це погано:**
+
+1. **Keyboard Control:** Ви не натиснете цей `div` через `Enter` або `Space`. `Tab` пропустить його.
+2. **Semantic Void:** Браузер бачить тут "текстовий контейнер", а не інтерактивний елемент.
+
+**Правильний код:**
+
+```html
+<button type="button" onclick="login()">Login</button>
+
+```
+
+---
+
+## 2. Концепція: DOM як Структура Даних
 
 Ми не "верстаємо сторінки". Ми проектуємо граф об'єктів у пам'яті.
 
-### 1.1. Природа мови: Declarative vs Imperative
+### 2.1. Природа мови: Declarative vs Imperative
 HTML — це **декларативна мова (Declarative Language)**. Це важливо розуміти після C++.
 
 * **Імперативний підхід (C++, Assembly):** Ви описуєте *як* досягти результату. Ви керуєте пам'яттю, циклами та інструкціями CPU.
@@ -57,17 +209,17 @@ HTML — це **декларативна мова (Declarative Language)**. Це
 
 ---
 
-## 2. Еволюція та Стандарти (History & Standards)
+## 3. Еволюція та Стандарти (History & Standards)
 
 Чому ваш браузер досі підтримує код з 1995 року і хто насправді керує вебом?
 
-### 2.1. XHTML: Спроба навести порядок (The Strict Era)
+### 3.1. XHTML: Спроба навести порядок (The Strict Era)
 На початку 2000-х W3C (World Wide Web Consortium) хотіли зробити HTML строгим, як XML. Так з'явився **XHTML**.
 * **Філософія:** "Syntax Error = Stop Rendering". Це була спроба нав'язати інженерну дисципліну.
 * **Аналог в C++:** Це компіляція з прапором `-Werror`. Якщо ви забули закрити дужку `/>` або використали неканонічний атрибут — сторінка не рендериться взагалі (Yellow Screen of Death).
 * **Чому провалився:** Web — це "брудне" середовище. Бізнес не міг дозволити, щоб сайт не працював через одну помилку в розмітці. Браузери обрали шлях **"Fault Tolerance"** (виправляти помилки за розробника), що вбило ідею XHTML.
 
-### 2.2. HTML4 vs HTML5: Зміна парадигми
+### 3.2. HTML4 vs HTML5: Зміна парадигми
 **HTML4 (1997)** був мовою розмітки *текстових документів*.
 **HTML5 (2014)** став платформою для *застосунків*.
 
@@ -79,7 +231,7 @@ HTML — це **декларативна мова (Declarative Language)**. Це
 | **Семантика** | `<div id="header">`, `<div class="nav">` | `<header>`, `<nav>`, `<article>`, `<section>` |
 | **Parsing** | Невизначений для помилок | Чітко описано, як браузер має "лагодити" битий HTML |
 
-### 2.3. WHATWG та Living Standard
+### 3.3. WHATWG та Living Standard
 Сьогодні поняття "HTML5" технічно застаріло. Існує просто **HTML Living Standard**.
 
 * **Конфлікт:** W3C хотів академічної чистоти (XHTML 2.0). Виробники браузерів (Apple, Mozilla, Opera) хотіли прагматизму і зворотної сумісності.
@@ -88,7 +240,7 @@ HTML — це **декларативна мова (Declarative Language)**. Це
 
 ---
 
-## 3. Анатомія Браузера: Процеси та Потоки
+## 4. Анатомія Браузера: Процеси та Потоки
 
 Сучасний Chrome — це не одна програма, це міні-ОС.
 
@@ -116,7 +268,7 @@ HTML — це **декларативна мова (Declarative Language)**. Це
 - **Переваги:** Висока стабільність (краш однієї вкладки не вбиває браузер), безпека, паралельне виконання.
 - **Недоліки:** Підвищене споживання оперативної пам'яті (RAM) через дублювання базових структур у кожному процесі.
 
-### 3.1. Threading Model (Хто виконує ваш код?)
+### 4.1. Threading Model (Хто виконує ваш код?)
 
 | Процес / Потік | Аналог у C++ GameDev | За що відповідає |
 | :--- | :--- | :--- |
@@ -149,7 +301,7 @@ while(true) {
 
 ---
 
-## 4. Critical Rendering Path: Ціна одного тегу
+## 5. Critical Rendering Path: Ціна одного тегу
 
 Як `<div style="width: 50%">` перетворюється на пікселі?
 
@@ -278,158 +430,6 @@ for (let i = 0; i < 100; i++) {
 
 ---
 
-## 5. HTML Engineering: Синтаксис, Семантика та Структура
-
-Ми розглядаємо HTML не просто як текст, а як інструкцію для парсера та базу для Accessibility Tree.
-
-### 5.1. Анатомія, Коментарі та Порожні Елементи
-
-**HTML Element** — це абстракція, що складається з трьох частин:
-1. **Start Tag:** `<tagname>`
-2. **Content:** Текст або вкладені елементи.
-3. **End Tag:** `</tagname>`
-
-**Коментарі (Comments):**
-Як і в C++, код потребує пояснень або тимчасового відключення блоків. Коментарі не рендеряться в DOM.
-```html
-
-```
-
-**Void Elements (Порожні елементи):**
-Деякі теги технічно не можуть мати контенту, тому їм не потрібен закриваючий тег.
-
-* `<img>` — зображення.
-* `<input>` — поле вводу.
-* `<br>` — розрив рядка.
-* `<hr>` — тематичний розділювач.
-* `<meta>` — метадані.
-
-> **Що буде, якщо між тегами немає тексту?**
-> Якщо це контейнер (наприклад, `<div></div>` або `<span></span>`) без контенту і без заданих розмірів у CSS — він **схлопнеться** в 0x0 пікселів і нічого не відобразиться на екрані.
-
-### 5.2. HTML Entities (Escaping)
-
-У C++ ми використовуємо `\` для екранування спецсимволів. У HTML для цього існують **Entities**.
-Оскільки символи `<` та `>` зарезервовані для синтаксису тегів, ми не можемо просто написати `if (x < y)`.
-
-**Основні сутності:**
-
-* `<` (Less Than) → `&lt;` або `&#60;`
-* `>` (Greater Than) → `&gt;` або `&#62;`
-* `&` (Ampersand) → `&amp;` або `&#38;`
-* `"` (Double Quote) → `&quot;`
-* `'` (Single Quote) → `&apos;`
-
-### 5.3. Collapsing White Space (Згортання пробілів)
-
-Парсер обробляє **White Space** (пробіли, таби, `\n`) за специфічним алгоритмом:
-
-1. **Sequences:** Послідовність пробілів/ентерів згортається в **ОДИН** пробіл.
-2. **Trimming:** Пробіли на початку і в кінці елемента ігноруються.
-
-```html
-<p>
-   Hello       World
-</p>
-
-```
-
-### 5.4. Структурні Компоненти: Списки, Таблиці, Посилання
-
-**Списки (Lists):**
-
-* `<ul>` (Unordered): Маркований список.
-* `<ol>` (Ordered): Нумерований список.
-* `<dl>` (Definition): Словник "Термін (`<dt>`) — Визначення (`<dd>`)".
-
-**Таблиці (Tables):**
-Використовуються **тільки для табличних даних**, а не для верстки макету сторінки (як це робили у 90-х).
-
-* `<table>` — контейнер.
-* `<tr>` (Table Row) — рядок.
-* `<th>` (Table Header) — заголовок стовпця (жирний шрифт, центрування).
-* `<td>` (Table Data) — комірка даних.
-
-**Гіперпосилання (Anchors):**
-Тег `<a>` (Anchor) створює зв'язки між документами.
-
-```html
-<a href="[https://google.com](https://google.com)" target="_blank">Google</a>
-
-<a href="/home"><img src="logo.png"></a>
-
-```
-
-### 5.5. Блокові vs Рядкові (Block vs Inline)
-
-**Block Level (`<div>`, `<p>`, `<section>`)**
-
-* **Поведінка:** Займає всю доступну ширину (width: 100%), починається з нового рядка.
-
-**Inline Level (`<span>`, `<a>`, `<b>`)**
-
-* **Поведінка:** Займає тільки ширину контенту, тече як текст.
-
-### 5.6. Semantic HTML vs Non-Semantic (Div Soup)
-
-**Non-Semantic (`<div>`, `<span>`):**
-Історично розробники використовували `<div>` для всього, додаючи сенс через `id` або `class`. Це називається "Div Soup".
-
-```html
-<div id="header">...</div>
-<div id="nav">...</div>
-<div id="article">...</div>
-
-```
-
-`<div>` нічого не говорить браузеру про вміст. Це просто "мішок" для групування елементів та стилізації через CSS.
-
-**Semantic HTML (HTML5):**
-Використання тегів, які передають **зміст та призначення** контенту.
-
-```html
-<header>...</header>
-<nav>...</nav>
-<article>...</article>
-<footer>...</footer>
-
-```
-
-**Чому це критично (Engineering Perspective):**
-
-1. **SEO (Search Engine Optimization):** Google-бот розуміє, що текст у `<article>` важливіший за текст у `<footer>`.
-2. **Accessibility (A11y):** Скрінрідери для незрячих використовують ці теги для навігації ("Перейти до меню", "Пропустити шапку").
-3. **Visual vs Logical:**
-* `<b>` (Bold) — просто жирний текст (Visual).
-* `<strong>` — логічно важливий текст (Semantic). Скрінрідер змінить інтонацію.
-* `<i>` (Italic) — просто курсив.
-* `<em>` (Emphasis) — логічний акцент.
-
-
-
-### 5.7. Anti-Pattern: Кнопка чи Div?
-
-Ми часто бачимо такий код:
-
-```html
-<div onclick="login()" class="btn">Login</div>
-
-```
-
-**Чому це погано:**
-
-1. **Keyboard Control:** Ви не натиснете цей `div` через `Enter` або `Space`. `Tab` пропустить його.
-2. **Semantic Void:** Браузер бачить тут "текстовий контейнер", а не інтерактивний елемент.
-
-**Правильний код:**
-
-```html
-<button type="button" onclick="login()">Login</button>
-
-```
-
----
-
 ## 6. Форми та Передача Даних (Data Transport)
 
 Хоча Hive Mind — це гра, будь-який веб-додаток має **авторизацію** та **налаштування**. Для цього існують форми.
@@ -540,87 +540,4 @@ antDiv.style.top = y + 'px';
 
 ---
 
-## Слайди: HTML Q&A (Лекція 5)
 
-![Слайд 1](attachments/html_qa/slide-01.png)
-![Слайд 2](attachments/html_qa/slide-02.png)
-![Слайд 3](attachments/html_qa/slide-03.png)
-![Слайд 4](attachments/html_qa/slide-04.png)
-![Слайд 5](attachments/html_qa/slide-05.png)
-![Слайд 6](attachments/html_qa/slide-06.png)
-![Слайд 7](attachments/html_qa/slide-07.png)
-![Слайд 8](attachments/html_qa/slide-08.png)
-![Слайд 9](attachments/html_qa/slide-09.png)
-![Слайд 10](attachments/html_qa/slide-10.png)
-![Слайд 11](attachments/html_qa/slide-11.png)
-![Слайд 12](attachments/html_qa/slide-12.png)
-![Слайд 13](attachments/html_qa/slide-13.png)
-![Слайд 14](attachments/html_qa/slide-14.png)
-![Слайд 15](attachments/html_qa/slide-15.png)
-![Слайд 16](attachments/html_qa/slide-16.png)
-![Слайд 17](attachments/html_qa/slide-17.png)
-![Слайд 18](attachments/html_qa/slide-18.png)
-![Слайд 19](attachments/html_qa/slide-19.png)
-![Слайд 20](attachments/html_qa/slide-20.png)
-![Слайд 21](attachments/html_qa/slide-21.png)
-![Слайд 22](attachments/html_qa/slide-22.png)
-![Слайд 23](attachments/html_qa/slide-23.png)
-![Слайд 24](attachments/html_qa/slide-24.png)
-![Слайд 25](attachments/html_qa/slide-25.png)
-![Слайд 26](attachments/html_qa/slide-26.png)
-![Слайд 27](attachments/html_qa/slide-27.png)
-![Слайд 28](attachments/html_qa/slide-28.png)
-![Слайд 29](attachments/html_qa/slide-29.png)
-![Слайд 30](attachments/html_qa/slide-30.png)
-![Слайд 31](attachments/html_qa/slide-31.png)
-![Слайд 32](attachments/html_qa/slide-32.png)
-![Слайд 33](attachments/html_qa/slide-33.png)
-![Слайд 34](attachments/html_qa/slide-34.png)
-![Слайд 35](attachments/html_qa/slide-35.png)
-![Слайд 36](attachments/html_qa/slide-36.png)
-![Слайд 37](attachments/html_qa/slide-37.png)
-![Слайд 38](attachments/html_qa/slide-38.png)
-![Слайд 39](attachments/html_qa/slide-39.png)
-![Слайд 40](attachments/html_qa/slide-40.png)
-![Слайд 41](attachments/html_qa/slide-41.png)
-![Слайд 42](attachments/html_qa/slide-42.png)
-![Слайд 43](attachments/html_qa/slide-43.png)
-![Слайд 44](attachments/html_qa/slide-44.png)
-![Слайд 45](attachments/html_qa/slide-45.png)
-![Слайд 46](attachments/html_qa/slide-46.png)
-![Слайд 47](attachments/html_qa/slide-47.png)
-![Слайд 48](attachments/html_qa/slide-48.png)
-![Слайд 49](attachments/html_qa/slide-49.png)
-![Слайд 50](attachments/html_qa/slide-50.png)
-![Слайд 51](attachments/html_qa/slide-51.png)
-![Слайд 52](attachments/html_qa/slide-52.png)
-![Слайд 53](attachments/html_qa/slide-53.png)
-![Слайд 54](attachments/html_qa/slide-54.png)
-![Слайд 55](attachments/html_qa/slide-55.png)
-![Слайд 56](attachments/html_qa/slide-56.png)
-![Слайд 57](attachments/html_qa/slide-57.png)
-![Слайд 58](attachments/html_qa/slide-58.png)
-![Слайд 59](attachments/html_qa/slide-59.png)
-![Слайд 60](attachments/html_qa/slide-60.png)
-![Слайд 61](attachments/html_qa/slide-61.png)
-![Слайд 62](attachments/html_qa/slide-62.png)
-![Слайд 63](attachments/html_qa/slide-63.png)
-![Слайд 64](attachments/html_qa/slide-64.png)
-![Слайд 65](attachments/html_qa/slide-65.png)
-![Слайд 66](attachments/html_qa/slide-66.png)
-![Слайд 67](attachments/html_qa/slide-67.png)
-![Слайд 68](attachments/html_qa/slide-68.png)
-![Слайд 69](attachments/html_qa/slide-69.png)
-![Слайд 70](attachments/html_qa/slide-70.png)
-![Слайд 71](attachments/html_qa/slide-71.png)
-![Слайд 72](attachments/html_qa/slide-72.png)
-![Слайд 73](attachments/html_qa/slide-73.png)
-![Слайд 74](attachments/html_qa/slide-74.png)
-![Слайд 75](attachments/html_qa/slide-75.png)
-![Слайд 76](attachments/html_qa/slide-76.png)
-![Слайд 77](attachments/html_qa/slide-77.png)
-![Слайд 78](attachments/html_qa/slide-78.png)
-![Слайд 79](attachments/html_qa/slide-79.png)
-![Слайд 80](attachments/html_qa/slide-80.png)
-![Слайд 81](attachments/html_qa/slide-81.png)
-![Слайд 82](attachments/html_qa/slide-82.png)

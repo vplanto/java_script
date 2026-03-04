@@ -84,5 +84,4 @@
 - [Шпаргалка по Markdown](n02_markdown.md)
 - [Git Guide: як не втратити код і здати лабу](n03_git_basics.md)
 - [FAQ & Troubleshooting: типові помилки](faq_troubleshooting.md)
-- [Вкладення та PDF-матеріали курсу](attachments/README.md)
 - [TODO: план розробки курсу](todo.md)
