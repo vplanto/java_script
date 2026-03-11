@@ -136,7 +136,67 @@ console.log(original.settings.theme); // "blue" -> ЩО?! Чому shallow copy 
 
 -----
 
-## Контрольні питання
+## 5\. DOM Events: виконуємо обіцянку з минулої лекції
+
+> *На лекції з CSS ми зробили кнопку на `position: absolute` і пообіцяли: «JS змінює координати при `mouseover`». Час виконати.*
+
+### Як JS «чує» дії користувача?
+
+Браузер генерує **події (Events)** — сигнали про те, що щось сталось. JS може підписатись на ці сигнали через `addEventListener`:
+
+```javascript
+element.addEventListener('назва_події', функція_обробник);
+```
+
+| Подія | Коли спрацьовує |
+|---|---|
+| `click` | Клік мишею |
+| `mouseover` | Курсор навівся на елемент |
+| `mousemove` | Курсор рухається по елементу |
+| `keydown` | Натиснута клавіша |
+| `submit` | Відправка форми |
+
+### Кнопка-втікач: повний JS-код
+
+Відкрийте ваш `index.html` з домашнього завдання і підключіть скрипт:
+
+```javascript
+const btn = document.getElementById('escapeBtn');
+
+btn.addEventListener('mouseover', function() {
+    // Розміри вікна браузера
+    const maxX = window.innerWidth  - btn.offsetWidth;
+    const maxY = window.innerHeight - btn.offsetHeight;
+
+    // Випадкові координати в межах вікна
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+
+    // Змінюємо CSS-властивості через JS
+    btn.style.left = randomX + 'px';
+    btn.style.top  = randomY + 'px';
+});
+```
+
+**Що тут відбувається:**
+
+```
+CSS лекція:  задали position: absolute + початкові top/left
+JS лекція:   addEventListener → при mouseover → змінюємо top/left
+```
+
+> `btn.style.left = '200px'` — це те саме, що написати `left: 200px` у CSS, але програмно. Ви змінюєте **inline-стиль** елемента з JavaScript.
+
+### 🤔 Давайте поміркуємо: чому `mouseover`, а не `mouseenter`?
+
+`mouseover` спрацьовує при наведенні **і** при переміщенні всередині елемента (bubbles).  
+`mouseenter` спрацьовує **тільки** при першому наведенні на елемент.
+
+Для кнопки-втікача нам важливо, щоб вона тікала одразу як тільки курсор наближується — тому `mouseover`.
+
+-----
+
+
 
 1.  Чому `const a = []; a.push(1)` працює, а `const a = 1; a = 2` видає помилку?
 2.  Де зберігається змінна `let x = 10` — у Стеку чи в Купі? А `let y = { val: 10 }`?

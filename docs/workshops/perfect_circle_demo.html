@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Circle — Volume Control</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0f0f1a;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            gap: 24px;
+        }
+
+        h1 { font-size: 1.4rem; color: #a0a0c0; letter-spacing: 2px; text-transform: uppercase; }
+
+        #canvas-wrapper {
+            position: relative;
+            border: 2px solid #2a2a4a;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            cursor: crosshair;
+            background: #13132a;
+        }
+
+        #guide-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 1px dashed #2a2a5a;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        #ui {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 400px;
+        }
+
+        #volume-display {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #7c6bff;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+
+        #score-label {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        #accuracy-bar-wrap {
+            width: 100%;
+            background: #1e1e3a;
+            border-radius: 8px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        #accuracy-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff4e6a, #7c6bff, #4effb8);
+            border-radius: 8px;
+            transition: width 0.3s;
+        }
+
+        #instructions {
+            font-size: 0.85rem;
+            color: #555;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        #reset-btn {
+            padding: 10px 28px;
+            background: #2a2a4a;
+            color: #a0a0c0;
+            border: 1px solid #3a3a6a;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        #reset-btn:hover { background: #3a3a6a; }
+
+        #result-popup {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        #result-popup.show { display: flex; }
+
+        #result-score {
+            font-size: 6rem;
+            font-weight: bold;
+            color: #4effb8;
+        }
+        #result-label { font-size: 1.5rem; color: #a0a0c0; }
+        #result-volume {
+            font-size: 2rem;
+            color: #7c6bff;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🔊 Малюй коло — керуй гучністю</h1>
+
+<div id="canvas-wrapper">
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div id="guide-circle"></div>
+</div>
+
+<div id="ui">
+    <div id="volume-display">—</div>
+    <div id="score-label">Намалюй коло, щоб встановити гучність</div>
+    <div id="accuracy-bar-wrap">
+        <div id="accuracy-bar"></div>
+    </div>
+    <p id="instructions">
+        Утримуй мишу і намалюй коло навколо центру.<br>
+        Чим ідеальніше коло — тим вища точність (і гучність).
+    </p>
+    <button id="reset-btn">↺ Намалювати знову</button>
+</div>
+
+<div id="result-popup">
+    <div id="result-score"></div>
+    <div id="result-label">точність</div>
+    <div id="result-volume"></div>
+    <button id="reset-btn-2" onclick="resetCanvas()" style="padding:12px 32px;background:#2a2a4a;color:#a0a0c0;border:1px solid #3a3a6a;border-radius:8px;cursor:pointer;font-size:1rem;">
+        ↺ Ще раз
+    </button>
+</div>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const CENTER_X = canvas.width  / 2;
+    const CENTER_Y = canvas.height / 2;
+    const IDEAL_RADIUS = 100;
+
+    let isDrawing = false;
+    let points = [];
+
+    // === Web Audio API ===
+    let audioCtx = null;
+
+    function playVolume(volumePct) {
+        // Ліниво створюємо AudioContext при першому використанні
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const gain    = audioCtx.createGain();
+        const osc     = audioCtx.createOscillator();
+
+        // Частота: від 220Hz (тихо) до 880Hz (гучно) — чим точніше, тим вищий тон
+        osc.type      = 'sine';
+        osc.frequency.value = 220 + (volumePct / 100) * 660;
+
+        // Гучність = результат / 100
+        gain.gain.setValueAtTime(volumePct / 100, audioCtx.currentTime);
+        // Плавне затихання через 1.2 секунди
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.5);
+    }
+
+    // === Малювання ===
+
+
+    canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        points = [];
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        const { x, y } = getPos(e);
+        ctx.moveTo(x, y);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        const { x, y } = getPos(e);
+        points.push({ x, y });
+
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#7c6bff';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        if (!isDrawing) return;
+        isDrawing = false;
+        if (points.length > 20) evaluate();
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        if (isDrawing) {
+            isDrawing = false;
+            if (points.length > 20) evaluate();
+        }
+    });
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    }
+
+    // === Оцінка кола (RMSE) ===
+
+    function evaluate() {
+        // Відстані точок від центру
+        const distances = points.map(p =>
+            Math.hypot(p.x - CENTER_X, p.y - CENTER_Y)
+        );
+
+        // Середній радіус намальованого кола
+        const avgRadius = distances.reduce((a, b) => a + b, 0) / distances.length;
+
+        // RMSE відхилення від avg radius (наскільки «кругле»)
+        const rmse = Math.sqrt(
+            distances.reduce((sum, d) => sum + (d - avgRadius) ** 2, 0) / distances.length
+        );
+
+        // Відхилення від ІДЕАЛЬНОГО радіуса (наскільки правильного розміру)
+        const sizeError = Math.abs(avgRadius - IDEAL_RADIUS);
+
+        // Точність 0..100
+        const roundness  = Math.max(0, 100 - rmse * 2);
+        const sizeScore  = Math.max(0, 100 - sizeError * 0.8);
+        const accuracy   = Math.round((roundness * 0.7 + sizeScore * 0.3));
+
+        // Гучність = точність
+        const volume = accuracy;
+
+        showResult(accuracy, volume, avgRadius, rmse);
+    }
+
+    function showResult(accuracy, volume, avgRadius, rmse) {
+        // Намалювати ідеальне коло і середній радіус
+        ctx.beginPath();
+        ctx.arc(CENTER_X, CENTER_Y, avgRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(78, 255, 184, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Позначити центр
+        ctx.beginPath();
+        ctx.arc(CENTER_X, CENTER_Y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ff4e6a';
+        ctx.fill();
+
+        // Показати popup
+        const popup = document.getElementById('result-popup');
+        document.getElementById('result-score').textContent = accuracy + '%';
+        document.getElementById('result-volume').textContent = '🔊 Гучність: ' + volume + '%';
+
+        // Колір залежно від результату
+        const color = accuracy >= 80 ? '#4effb8' : accuracy >= 50 ? '#7c6bff' : '#ff4e6a';
+        document.getElementById('result-score').style.color = color;
+
+        // Оновити основний UI
+        document.getElementById('volume-display').textContent = volume + '%';
+        document.getElementById('volume-display').style.color = color;
+        document.getElementById('score-label').textContent =
+            `Точність: ${accuracy}% | RMSE: ${rmse.toFixed(1)}px | Радіус: ${Math.round(avgRadius)}px`;
+        document.getElementById('accuracy-bar').style.width = accuracy + '%';
+
+        popup.classList.add('show');
+
+        // Програти тон на рівні точності
+        playVolume(volume);
+    }
+
+    function resetCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('result-popup').classList.remove('show');
+        document.getElementById('volume-display').textContent = '—';
+        document.getElementById('volume-display').style.color = '#7c6bff';
+        document.getElementById('score-label').textContent = 'Намалюй коло, щоб встановити гучність';
+        document.getElementById('accuracy-bar').style.width = '0%';
+        points = [];
+    }
+
+    document.getElementById('reset-btn').addEventListener('click', resetCanvas);
+</script>
+</body>
+</html>
