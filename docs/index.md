@@ -18,6 +18,7 @@
 
 3. [Лекція 1: HTML як дерево (DOM). Чому семантика важлива для машин?](01_html_dom.md)
 4. [Лекція 2: CSS як система координат. Box Model та Layout](02_css_layout.md)
+    * [Практикум (walkthrough): комбінатори та псевдокласи на Wikipedia](workshops/ws_practice_css_selectors_walkthrough.md)
 5. **[Воркшоп 1: «Bad UI Battle». Екстремальне вивчення DOM Events та UX](workshops/ws01_bad_ui.md)**
 
 ---
