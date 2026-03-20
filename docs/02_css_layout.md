@@ -1,5 +1,20 @@
 # Лекція 2: CSS як система координат
 
+## Міні-план: як читати цю лекцію
+
+Щоб **системно** розібратись у CSS, зручно тримати в голові чотири опори — і розуміти **де кожна з них застосовується**:
+
+| Опора | Про що | Де «живе» |
+|--------|--------|-----------|
+| **Selectors** | *До яких елементів* застосовується правило (тег, клас, id, вкладеність, псевдокласи). | Початок кожного правила; каскад і специфічність. |
+| **Box model** | *Скільки місця займає блок*: `width`/`height`, `padding`, `border`, `margin`, `box-sizing`. | Кожен елемент як «коробка»; розміри та відступи. |
+| **Flow** | *Як елементи розташовуються один відносно одного*: нормальний потік, `display` (block/inline/flex/grid), `position`, `float`. | Макет сторінки; коли щось «вилазить» з очікуваного порядку. |
+| **Межа застосування** | *Коли правило справді спрацьовує*: медіа-запити, успадкування, `!important`, контексти накладання (`z-index`), властивості, що не успадковуються. | Коли «я все написав правильно, а не працює». |
+
+Далі в тексті ці теми перетинаються: спочатку інтуїція й історія, потім — box model, потік, flex/grid тощо. Якщо щось «ламається», перевірте по черзі: **селектор потрапив у елемент? → коробка рахується як треба? → елемент у правильному потоці/контексті? → чи не перебиває інше правило або контекст?**
+
+---
+
 ## Що таке CSS?
 
 **CSS (Cascading Style Sheets)** — мова опису зовнішнього вигляду HTML-документа. Якщо HTML — це кістяк (структура та зміст), то CSS — це зовнішність: кольори, розміри, відступи, шрифти, анімації.
@@ -142,7 +157,7 @@ p {
 │  ┌───────────────────────────────┐  │
 │  │         BORDER                │  │  ← рамка
 │  │  ┌─────────────────────────┐  │  │
-│  │  │      PADDING (всередині) │  │  │  ← відступ від краю до змісту
+│  │  │     PADDING (всередині) │  │  │  ← відступ від краю до змісту
 │  │  │  ┌───────────────────┐  │  │  │
 │  │  │  │   CONTENT (текст) │  │  │  │
 │  │  │  └───────────────────┘  │  │  │
@@ -240,6 +255,8 @@ document.head.insertAdjacentHTML('beforeend', '<style>* { outline: 1px solid red
 </html>
 ```
 
+Таблиця нижче узагальнює `position`; одразу після неї — **приклади на тих самих блоках A, B, C** з цього файлу.
+
 > **Підказка:** після `position: absolute` на **B** блок **C** займе місце **B** — саме так «випадіння з потоку» видно без вимірювань. Поверніть закоментований рядок назад у CSS — порядок відновиться.
 
 | Значення | У потоці? | Координати відносно | Коли використовувати |
@@ -250,48 +267,133 @@ document.head.insertAdjacentHTML('beforeend', '<style>* { outline: 1px solid red
 | `fixed` | ❌ | Вікна браузера (viewport) | Sticky header, кнопка «↑ нагору», cookie-банер |
 | `sticky` | ✅/❌ | Потоку → потім viewport при скролі | Заголовки таблиць, розділів, що «прилипають» |
 
-### Приклади коду
+### Приклади коду (той самий демо-потік A, B, C)
 
-**`relative` — зсунути, але місце зберегти:**
+Усі приклади нижче стосуються **попереднього** демо (три блоки A, B, C у стовпчик).
+
+**`relative` — зсунути блок, але місце в потоці зберегти (спробуйте на A):**
 ```css
-.icon {
+.a {
     position: relative;
-    top: -4px;  /* підняти на 4px, але сусіди цього не відчують */
+    top: -8px;  /* візуально піднявся; B і C стоять так, ніби A не рухали */
 }
 ```
 
-**`absolute` — «вирвати» і розмістити точно:**
+**`absolute` — «вирвати» з потоку (як у підказці над таблицею — на B):**
 ```css
-/* Батько ОБОВ'ЯЗКОВО має position: relative */
-.card {
-    position: relative;
-}
-.badge {
+.b {
     position: absolute;
     top: 8px;
-    right: 8px;  /* кут картки */
+    right: 8px;
 }
 ```
-> ⚠️ **Найпоширеніша помилка:** забути поставити `position: relative` на батька. Тоді `absolute`-елемент «злітає» і позиціонується відносно всього `<body>`.
+Після цього **C підніметься під місце B** — це і є демо випадіння з потоку.
 
-**`fixed` — приклеїти до екрану:**
-```css
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;  /* розтягнути на всю ширину вікна */
-    z-index: 100; /* поверх решти контенту */
-}
+> ⚠️ **Найпоширеніша помилка:** якщо потрібен «кут **картки**», а не вікна браузера — батько B має мати `position: relative` (і обмежений розмір). У голому `flow-demo.html` батько — `<body>`, тому `absolute` часто прилітає до кутів **сторінки**. Повний приклад з обгорткою — у прихованій секції нижче.
+
+**`fixed` і `sticky`** на трьох смугах A/B/C майже не видно: для `fixed` потрібен «екран» і контент під ним, для `sticky` — **довгий скрол**. Окремий файл у `<details>`.
+
+<details>
+<summary><strong>Розширений HTML: <code>relative</code> + <code>absolute</code> з батьком-карткою</strong></summary>
+
+Збережіть як `flow-demo-positioning.html`. Тут три блоки всередині `.stage` — батько з `position: relative`, щоб `absolute` на B був у **куті сцени**, а не сторінки.
+
+```html
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Демо потоку — positioning</title>
+  <style>
+    body { font-family: sans-serif; padding: 16px; }
+    /* «Картка»: обмежує absolute-дочірні елементи */
+    .stage {
+      position: relative;
+      max-width: 480px;
+      min-height: 220px;
+      padding: 16px;
+      border: 2px dashed #333;
+      background: #f8f9fa;
+    }
+    .box { margin: 8px 0; padding: 16px; color: #fff; }
+    .a { background: #2d6a4f; }
+    /* Спробуйте закоментувати position на .stage — B «поїде» до кута вікна */
+    .b {
+      background: #bc6c25;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      margin: 0;
+    }
+    .c { background: #1d3557; }
+  </style>
+</head>
+<body>
+  <p>Блоки A, B, C — той самий зміст, що в <code>flow-demo.html</code>, але B позиціонується відносно рамки <code>.stage</code>.</p>
+  <div class="stage">
+    <div class="box a">A — у потоці</div>
+    <div class="box b">B — absolute у куті .stage</div>
+    <div class="box c">C — у потоці (під A, місце B «порожнє» для потоку)</div>
+  </div>
+</body>
+</html>
 ```
 
-**`sticky` — гібрид: спочатку в потоці, потім прилипає:**
-```css
-.section-title {
-    position: sticky;
-    top: 0;  /* прилипає до верху, коли доскролив до нього */
-}
+</details>
+
+<details>
+<summary><strong>Розширений HTML: <code>fixed</code> шапка та <code>sticky</code> заголовок (скрол)</strong></summary>
+
+Збережіть як `flow-demo-fixed-sticky.html`. Прокрутіть сторінку вниз: шапка лишається зверху вікна (`fixed`), підзаголовок розділу «прилипає» під нею (`sticky`).
+
+```html
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Демо — fixed + sticky</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #e9ecef; }
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 12px 16px;
+      background: #1d3557;
+      color: #fff;
+      z-index: 100;
+    }
+    /* відступ, щоб контент не ховався під fixed-шапкою */
+    main { padding: 56px 16px 32px; max-width: 560px; margin: 0 auto; }
+    .section-title {
+      position: sticky;
+      top: 56px; /* однаковий відступ, що й у main padding-top — «під» fixed-шапкою */
+      background: #bc6c25;
+      color: #fff;
+      padding: 8px 12px;
+      margin: 24px 0 8px;
+    }
+    p { line-height: 1.5; margin: 0 0 12px; }
+  </style>
+</head>
+<body>
+  <header class="top-bar">fixed — завжди зверху вікна (як у демо-потоку це «шар над сторінкою»)</header>
+  <main>
+    <p>Довгий текст нижче — щоб був скрол; логіка та сама, що й для блоків A/B/C: спочатку потік, потім винятки.</p>
+    <h2 class="section-title">sticky — прилипає під шапкою при скролі</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Повторіть абзаци або згенеруйте текст, щоб сторінка була довгою.</p>
+    <p>Коли цей заголовок дійде до верху (з урахуванням fixed-шапки), він залишиться видимим під нею.</p>
+    <p style="height: 120vh;">Місце для скролу…</p>
+    <h2 class="section-title">Ще один sticky-розділ</h2>
+    <p>Той самий прийом для довгої сторінки.</p>
+  </main>
+</body>
+</html>
 ```
+
+</details>
 
 -----
 
