@@ -49,6 +49,8 @@
     console.log(a.val);
     ```
 
+    [🔍 Візуалізувати в Python Tutor](https://pythontutor.com/javascript.html#code=let%20a%20%3D%20%7B%20val%3A%2010%20%7D%3B%0Alet%20b%20%3D%20a%3B%0Ab.val%20%3D%2020%3B%0Aconsole.log%28a.val%29%3B&curInstr=0&mode=display&origin=opt-frontend.js&py=js&rawInputJSON=%7B%7D)
+
 <details markdown="1">
 <summary>Відповіді (Інженерний погляд)</summary>
 
@@ -119,6 +121,8 @@ graph LR;
     Var3 -->|Reference| Obj1
 ```
 
+[🔍 Візуалізувати Stack vs Heap](https://pythontutor.com/javascript.html#code=let%20age%20%3D%2025%3B%0Alet%20name%20%3D%20%22Max%22%3B%0Alet%20user%20%3D%20%7B%20name%3A%20%22Max%22,%20role%3A%20%22Admin%22%20%7D%3B&curInstr=0&mode=display&origin=opt-frontend.js&py=js&rawInputJSON=%7B%7D)
+
 > **Важливо:** Коли ви створюєте об'єкт `const user = {}`, у Стеку створюється змінна `user` (яка важить 8 байт і містить адресу), а в Купі виділяється пам'ять під сам об'єкт.
 
 -----
@@ -147,7 +151,14 @@ Heap:
   [об'єкт A: original]  ----settings---->  [об'єкт B: { theme: "dark" }]
 ```
 
+<<<<<<< HEAD
 Тобто `original.settings` — це «стрілка» до об'єкта B, а не копія всього B всередині A.
+=======
+[🔍 Візуалізувати Shallow Copy (Пастка посилань)](https://pythontutor.com/javascript.html#code=let%20original%20%3D%20%7B%20settings%3A%20%7B%20theme%3A%20%22dark%22%20%7D%20%7D%3B%0Alet%20fakeCopy%20%3D%20original%3B%0Alet%20realShallowCopy%20%3D%20%7B%20...original%20%7D%3B%0A%0AfakeCopy.settings.theme%20%3D%20%22light%22%3B%0ArealShallowCopy.settings.theme%20%3D%20%22blue%22%3B&curInstr=0&mode=display&origin=opt-frontend.js&py=js&rawInputJSON=%7B%7D)
+
+**Пояснення:**
+`spread` оператор (`...`) копіює тільки перший рівень об'єкта. Вкладений об'єкт `settings` — це все ще посилання на стару пам'ять. Це називається **Shallow Copy** .
+>>>>>>> ac84028 (updates)
 
 ---
 
@@ -307,9 +318,12 @@ JS лекція:   addEventListener → при mouseover → змінюємо to
     boom();
     ```
 
+    [🔍 Візуалізувати переповнення Стеку (Recursion)](https://pythontutor.com/javascript.html#code=function%20boom%28%29%20%7B%0A%20%20%20%20boom%28%29%3B%0A%7D%0Aboom%28%29%3B&curInstr=0&mode=display&origin=opt-frontend.js&py=js&rawInputJSON=%7B%7D)
+
     Запустіть у консолі. Що ви побачите? (`RangeError: Maximum call stack size exceeded`). Ви щойно переповнили **Stack**.
 
 2.  **Завдання до гри:** У вашому коді гри (з минулої домашки) змінні рахунку (`score`) — це примітиви. А об'єкт `settings` (якщо є) — це посилання. Спробуйте створити функцію `resetGame`, яка повертає стан гри до початкового, не перезавантажуючи сторінку. Подумайте, як правильно "обнулити" об'єкти.
+
 ---
 
 
