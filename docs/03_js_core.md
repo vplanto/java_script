@@ -151,14 +151,9 @@ Heap:
   [об'єкт A: original]  ----settings---->  [об'єкт B: { theme: "dark" }]
 ```
 
-<<<<<<< HEAD
 Тобто `original.settings` — це «стрілка» до об'єкта B, а не копія всього B всередині A.
-=======
-[🔍 Візуалізувати Shallow Copy (Пастка посилань)](https://pythontutor.com/javascript.html#code=let%20original%20%3D%20%7B%20settings%3A%20%7B%20theme%3A%20%22dark%22%20%7D%20%7D%3B%0Alet%20fakeCopy%20%3D%20original%3B%0Alet%20realShallowCopy%20%3D%20%7B%20...original%20%7D%3B%0A%0AfakeCopy.settings.theme%20%3D%20%22light%22%3B%0ArealShallowCopy.settings.theme%20%3D%20%22blue%22%3B&curInstr=0&mode=display&origin=opt-frontend.js&py=js&rawInputJSON=%7B%7D)
 
-**Пояснення:**
-`spread` оператор (`...`) копіює тільки перший рівень об'єкта. Вкладений об'єкт `settings` — це все ще посилання на стару пам'ять. Це називається **Shallow Copy** .
->>>>>>> ac84028 (updates)
+[🔍 Візуалізувати Shallow Copy (Пастка посилань)](https://pythontutor.com/javascript.html#code=let%20original%20%3D%20%7B%20settings%3A%20%7B%20theme%3A%20%22dark%22%20%7D%20%7D%3B%0Alet%20fakeCopy%20%3D%20original%3B%0Alet%20realShallowCopy%20%3D%20%7B%20...original%20%7D%3B%0A%0AfakeCopy.settings.theme%20%3D%20%22light%22%3B%0ArealShallowCopy.settings.theme%20%3D%20%22blue%22%3B&curInstr=0&mode=display&origin=opt-frontend.js&py=js&rawInputJSON=%7B%7D)
 
 ---
 
