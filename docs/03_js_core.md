@@ -153,7 +153,8 @@ Heap:
 
 Тобто `original.settings` — це «стрілка» до об'єкта B, а не копія всього B всередині A.
 
-[🔍 Візуалізувати Shallow Copy (Пастка посилань)](https://pythontutor.com/javascript.html#code=let%20original%20%3D%20%7B%20settings%3A%20%7B%20theme%3A%20%22dark%22%20%7D%20%7D%3B%0Alet%20fakeCopy%20%3D%20original%3B%0Alet%20realShallowCopy%20%3D%20%7B%20...original%20%7D%3B%0A%0AfakeCopy.settings.theme%20%3D%20%22light%22%3B%0ArealShallowCopy.settings.theme%20%3D%20%22blue%22%3B&curInstr=0&mode=display&origin=opt-frontend.js&py=js&rawInputJSON=%7B%7D)
+[🔍 Візуалізувати Shallow Copy (Пастка посилань)](https://pythontutor.com/javascript.html#code=var%20original%20%3D%20%7B%20settings%3A%20%7B%20theme%3A%20%22dark%22%20%7D%20%7D%3B%0Avar%20fakeCopy%20%3D%20original%3B%0Avar%20realShallowCopy%20%3D%20Object.assign%28%7B%7D%2C%20original%29%3B%0A%0AfakeCopy.settings.theme%20%3D%20%22light%22%3B%0ArealShallowCopy.settings.theme%20%3D%20%22blue%22%3B%0Aconsole.log%28original.settings.theme%29%3B&curInstr=0&mode=display&origin=opt-frontend.js&py=js&rawInputJSON=%7B%7D)
+>  *У візуалізаторі використано `Object.assign({}, original)` — це функціональний еквівалент `{ ...original }`, який підтримується Python Tutor.*
 
 ---
 
