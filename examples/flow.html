@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Демо потоку</title>
+  <style>
+    body { font-family: sans-serif; padding: 16px; }
+    .box { margin: 8px 0; padding: 16px; color: #fff; }
+    .a { background: #2d6a4f; }
+    .b { background: #bc6c25; /* додайте: position: absolute; top: 8px; right: 8px; — і подивіться, як підніметься блок C */ }
+    .c { background: #1d3557; }
+  </style>
+</head>
+<body>
+  <p>Три блоки в <strong>normal flow</strong>. Потім експериментуйте з <code>.b</code>.</p>
+  <div class="box a">A — у потоці</div>
+  <div class="box b">B — у потоці</div>
+  <div class="box c">C — у потоці</div>
+</body>
+</html>
