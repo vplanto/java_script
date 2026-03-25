@@ -472,7 +472,7 @@ document.head.insertAdjacentHTML('beforeend', '<style>* { outline: 1px solid red
 Потрібно розмістити елемент ТОЧНО на сторінці?      →  position: absolute/fixed
 ```
 
-> **Правило:** не використовуйте JS (`element.style.left = ...`) там, де справляється CSS. JS — для логіки, CSS — для геометрії. Кожен `element.style` у циклі — це потенційний Layout Thrashing (з минулої лекції).
+> **Правило:** не використовуйте JS (`element.style.left = ...`) там, де справляється CSS. JS — для логіки, CSS — для геометрії. Кожен `element.style` у циклі — це потенційний Layout Thrashing (докладніше — у [Лекції 4](04_browser_internals.md)).
 
 -----
 

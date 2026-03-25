@@ -103,7 +103,7 @@ while(true) {
 1. **Main Thread заблокований** нескінченним циклом. Він не може обробити подію `click` або перерахувати `hover` ефекти.
 2. **Compositor Thread вільний.** Скрол — це часто просто зміщення вже намальованих шарів (Layers). Композитор може рухати картинку вгору-вниз без участі Main Thread.
 
-**Висновок:** Важкі обчислення (Pathfinding мурах) не можна робити в Main Thread. Треба використовувати **Web Workers** (аналог `std::thread`).
+**Висновок:** Важкі обчислення (Pathfinding мурах) не можна робити в Main Thread. Треба використовувати **Web Workers** (аналог `std::thread`). Детальніше — у [Лекції 4: Event Loop та Web Workers](04_browser_internals.md).
 
 </details>
 
@@ -257,6 +257,8 @@ for (let i = 0; i < 100; i++) {
 Зміна властивостей `width`, `height`, `margin`, `left` викликає **Layout** (CPU, дорого).
 Зміна `transform` та `opacity` викликає тільки **Composite** (GPU, дуже дешево).
 *Хочете 60 FPS анімацію мурахи? Використовуйте `transform: translate(x, y)`, а не `top/left`.*
+
+> Чому `requestAnimationFrame` краще за `setInterval` для анімацій — у [Лекції 4](04_browser_internals.md).
 
 ---
 

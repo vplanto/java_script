@@ -29,9 +29,8 @@
 
 6. [Лекція 3: JavaScript Runtime. Змінні, типи та об'єкти у пам'яті](03_js_core.md)
 7. [Лекція 3.5: Vibe Coding Protocol. Неймінг як техніка безпеки при роботі з AI](n04_vibe_coding_protocol.md)
-8. [Лекція 3.6: Лікнеп по ОС. Процеси, потоки та хто виконує код](03a_os_basics.md)
-9. [Лекція 4: Браузер зсередини. Event Loop, Rendering та чому JS «зависає»](04_browser_internals.md)
-10. [Додатково: How Browsers Work. Детальний розбір (HTML + ілюстрації)](how_do_browsers_work/index.html)
+8. [Лекція 4: Браузер зсередини. Event Loop, Rendering та чому JS «зависає»](04_browser_internals.md)
+9. [Додатково: How Browsers Work. Детальний розбір (HTML + ілюстрації)](how_do_browsers_work/index.html)
 
 ### Практика: Performance & Algorithms
 
