@@ -83,5 +83,6 @@
 - [Налаштування середовища (VS Code, Git)](n01_setup.md)
 - [Шпаргалка по Markdown](n02_markdown.md)
 - [Git Guide: як не втратити код і здати лабу](n03_git_basics.md)
+- [Екзаменаційний пул питань](exam.md)
 - [FAQ & Troubleshooting: типові помилки](faq_troubleshooting.md)
 - [TODO: план розробки курсу](todo.md)
