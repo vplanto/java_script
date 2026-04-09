@@ -320,7 +320,9 @@ JS лекція:   addEventListener → при mouseover → змінюємо to
 
 2.  **Hive Mind — крок 1: Grid (пам'ять світу)**
 
-    Відкрийте стартер-кіт [hive-mind-starter](file:///home/pvv/projects/onu/hive-mind-starter) та файл `src/models/Grid.js`.
+    Спочатку має бути розгорнуто стартер: **fork → clone → `npm install` → `npm run dev`** — готовий текст для Google Classroom: [hive_mind_google_classroom_setup.md](workshops/hive_mind_google_classroom_setup.md). Репозиторій: [hive-mind-starter](https://github.com/vplanto/hive-mind-starter).
+
+    Відкрийте стартер-кіт у VS Code та файл `src/models/Grid.js`.
 
     У конструкторі є два `TODO` — виділення пам'яті для сітки й феромонів. Реалізуйте їх, використовуючи знання з цієї лекції:
 
