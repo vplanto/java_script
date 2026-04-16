@@ -90,7 +90,7 @@
 
 1. Чим XSS відрізняється від CSRF? Яка атака складніша для захисту?
 
-<details>
+<details markdown="1">
 <summary>Відповідь</summary>
 
 XSS — зловмисник впроваджує скрипт у ваш сайт, і він виконується для жертви. Атака на контент сайту.
@@ -103,7 +103,7 @@ CSRF складніший: захист від XSS (escaping) стандарти
 
 2. Якщо база даних вкрадена і в ній паролі у відкритому вигляді — що трапиться з користувачами? А якщо паролі хешовані без солі?
 
-<details>
+<details markdown="1">
 <summary>Відповідь</summary>
 
 Відкриті паролі — кінець: зловмисник одразу входить в усі акаунти, а люди часто переставляють паролі між сервісами.
@@ -116,7 +116,7 @@ CSRF складніший: захист від XSS (escaping) стандарти
 
 3. Чому `innerHTML = userInput` небезпечно, а `textContent = userInput` — ні?
 
-<details>
+<details markdown="1">
 <summary>Відповідь</summary>
 
 `innerHTML` парсить рядок як HTML, тому `<script>alert(1)</script>` або `<img src=x onerror=alert(1)>` виконаються як код.
@@ -127,7 +127,7 @@ CSRF складніший: захист від XSS (escaping) стандарти
 
 4. Поясніть SQL Injection на прикладі. Як від нього захищаються?
 
-<details>
+<details markdown="1">
 <summary>Відповідь</summary>
 
 При склейці рядків: `"SELECT * FROM users WHERE name = '" + name + "'"` — якщо name = `'; DROP TABLE users; --`, запит стає руйнівним.
@@ -138,7 +138,7 @@ CSRF складніший: захист від XSS (escaping) стандарти
 
 5. Навіщо потрібна Content Security Policy (CSP)?
 
-<details>
+<details markdown="1">
 <summary>Відповідь</summary>
 
 CSP — HTTP-заголовок, який вказує браузеру, з яких доменів дозволено завантажувати скрипти, стилі, медіа. Навіть якщо зловмисник вставив `<script src="https://evil.com/steal.js">`, CSP заблокує його виконання. Це другий рубіж після escaping.

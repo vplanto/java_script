@@ -53,7 +53,7 @@ const clone = structuredClone(user);
 **Причина:**
 Ви забули `await`. Асинхронна функція повертає "обіцянку" результату, а не сам результат.
 
-**Рішення:**
+**Рішення:** використовуйте `await` усередині `async`-функції **або** ланцюжок `.then()` — інакше в змінній лишається саме `Promise`, а не результат.
 
 ```javascript
 // ❌ Без await
@@ -73,6 +73,8 @@ const response = await fetch('https://api.example.com/users');
 const data = await response.json();
 console.log(data); // { users: [...] }
 ```
+
+Стисла «еволюція» від Promise-ланцюжка до `async/await` — у [Лекції 7 (розділ 4a)](07_http_rest.md).
 
 -----
 

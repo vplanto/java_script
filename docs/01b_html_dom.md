@@ -119,20 +119,38 @@ while(true) {
 
 **Приклад коду:**
 
+Фрагменти розділені для наочності; у файлі вони зазвичай в одному документі.
+
 ```html
 <div class="box">Text</div>
-
 ```
 
 ```css
 /* CSS */
 .box { color: red; }
+```
 
+Повний мінімальний документ (можна зберегти як `index.html` і відкрити в браузері):
+
+```html
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <title>DOM + CSSOM приклад</title>
+  <style>
+    .box { color: red; }
+  </style>
+</head>
+<body>
+  <div class="box">Text</div>
+</body>
+</html>
 ```
 
 **Структура DOM дерева (візуалізація):**
 
-```
+```text
 Document
   └── <html>
       ├── <head>
@@ -151,7 +169,6 @@ struct Element {
     map<string, string> computedStyles = { {"color", "rgb(255,0,0)"} };
     vector<Node*> children;
 };
-
 ```
 
 ### Етап 2: Render Tree
@@ -166,7 +183,7 @@ struct Element {
 
 Але браузер будує не одне дерево — він будує **три**:
 
-```
+```text
 HTML текст  →  [парсер]  →  DOM Tree
 CSS текст   →  [парсер]  →  CSSOM Tree
                               ↓
@@ -190,11 +207,21 @@ DOM + CSSOM →  [злиття]  →  Render Tree  →  Layout  →  Paint
 **Приклад (Layout Thrashing):**
 
 ```javascript
-// ПОГАНО: Читання і запис у циклі викликає постійний перерахунок Layout
+// ПОГАНО: у циклі чергується read (offsetWidth → layout) і write (style → invalidation)
+// → браузер змушений багато разів синхронно перераховувати геометрію (layout thrashing).
 for (let i = 0; i < 100; i++) {
-    div.style.width = (div.offsetWidth + 1) + 'px'; 
+  div.style.width = (div.offsetWidth + 1) + "px";
 }
+```
 
+Краще згрупувати читання й запис (один прохід layout після змін):
+
+```javascript
+let w = div.offsetWidth;
+for (let i = 0; i < 100; i++) {
+  w += 1;
+}
+div.style.width = w + "px";
 ```
 
 ### Етап 4: Paint & Stacking Contexts (Малювання)
@@ -226,11 +253,10 @@ for (let i = 0; i < 100; i++) {
 
 **3. Правила роботи Z-Index**
 
-* **Вимога:** `z-index` працює **ТІЛЬКИ** на позиційованих елементах.
-* *Якщо елемент `static`, `z-index` буде проігноровано.*
+* **Загальне правило:** `z-index` впливає на порядок лише там, де елемент реально бере участь у **контексті накладання**. Найтиповіше — коли `position` **не** `static` (`relative`, `absolute`, `fixed`, `sticky`): тоді `z-index` явно піднімає або опускає шар відносно сусідів у тому ж батьківському контексті.
+* *Для «звичайного» блокового потоку з `position: static` значення `z-index` зазвичай ігнорується — немає окремого шару для порівняння.*
 
-
-* **Виняток (Flexbox):** Flex-дочірні елементи можуть використовувати `z-index`, навіть якщо вони не позиційовані (`position: static`).
+* **Виняток (Flex / Grid):** дочірні flex- або grid-елементи можуть використовувати `z-index` при `position: static` — це передбачено специфікацією layout, а не суперечить правилу вище: для них контекст накладання створює сам flex/grid-контейнер.
 
 **4. Контекст накладання (Stacking Context)**
 Додавання `z-index` до позиційованого елемента створює новий *Stacking Context*.

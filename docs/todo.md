@@ -1,6 +1,9 @@
 # TODO: Course Modernization Plan (Web Engineering)
 
 ## Meta Goals
+
+Ці пункти — **дорожня карта модернізації** матеріалів; частина вже відображена в лекціях/воркшопах, але правила здачі й структура репозиторіїв ще можуть бути не синхронізовані з маніфестом.
+
 - [ ] **Enforce Modern Syntax:** Заборонити `var` на рівні правил прийому робіт. Тільки `const` / `let`.
 - [ ] **Shift to Modules:** Відмовитися від глобального Scope у браузері. Всі скрипти мають бути `<script type="module">`.
 
@@ -35,21 +38,19 @@
 
 ## 🌐 Module 4: Networking
 ### Лекція 7: HTTP & REST
-- [ ] **Add Section: Async Patterns Evolution.**
-    - Чітка еволюція: Callback Hell -> Promises -> Async/Await.
-    - Показати *чому* ми використовуємо `await` (читабельність, flow control).
+- [x] **Async Patterns Evolution (мінімум).** Додано стислий блок **«4a. Асинхронність і fetch»** у [Лекції 7](07_http_rest.md) (колбеки → Promise → `async/await`).
+- [ ] **Розширити лекцію:** повний розбір callback hell, комбінаторів Promise (`all`, `allSettled`), обробка скасування (`AbortController`).
 
-### Воркшоп 9: Weather API
+### Воркшоп 7: Weather API (`ws07_weather_api.md`)
 - [ ] **Додати Task: Promise Orchestration.**
     - Завдання: Отримати погоду для 3-х столиць *одночасно* (не послідовно).
     - *Tech:* `Promise.all()`.
-- [ ] **Додати Task: Robust Error Handling.**
-    - Реалізувати блок `try/catch` з обробкою мережевих помилок vs помилок API (404/500).
+- [x] **Базовий `try/catch` + `response.ok`.** Уже є в коді воркшопу; залишилось додати окремі вправи на розрізнення мережевої помилки vs 4xx/5xx (див. [FAQ](faq_troubleshooting.md)).
 
 ---
 
 ## Module 5: Security & Final Project
-### Воркшоп 7: Auth & Security
+### Воркшоп 8: Auth & Security (`ws08_auth_security.md`)
 - [ ] **Додати Task: Client-Side Form Validation.**
     - Валідація *до* відправки запиту (UX + Security layer 1).
     - *Tech:* HTML5 Constraint Validation API (`checkValidity()`, `setCustomValidity`) або RegEx вручну.

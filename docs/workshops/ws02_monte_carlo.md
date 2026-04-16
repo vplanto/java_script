@@ -238,10 +238,17 @@ startBtn.addEventListener("click", () => {
 
 *Результат: Ви побачите, як заповнюється коло в реальному часі, не блокуючи інтерфейс.*
 
-<details markdown="1">
-<summary>👀 Подивитись референсне рішення</summary>
+### Референсне рішення (Challenge 3)
 
-**`worker.js` (Візуалізація)**
+<details markdown="1">
+<summary>Чому код тепер завжди на сторінці, а не лише всередині згорнутого блоку</summary>
+
+Деякі переглядачі та експорт PDF не показують вміст `<details>` — тому повний приклад винесено сюди. Нижче — ті самі файли `worker.js` і `script.js`.
+
+</details>
+
+**`worker.js` (візуалізація пачками)**
+
 ```javascript
 self.onmessage = function(e) {
     const iterations = e.data;
@@ -279,7 +286,8 @@ self.onmessage = function(e) {
 };
 ```
 
-**`script.js` (Візуалізація)**
+**`script.js` (візуалізація пачками)**
+
 ```javascript
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -321,8 +329,6 @@ startBtn.addEventListener("click", () => {
     worker.postMessage(iterations);
 });
 ```
-
-</details>
 
 ---
 
