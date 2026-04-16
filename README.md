@@ -84,9 +84,9 @@
 4. [Game Loop (Pong)](docs/workshops/ws04_game_loop.md) — 60 FPS фізика
 5. [Minesweeper](docs/workshops/ws05_minesweeper.md) — Рекурсія та розумний UI
 6. [Data Analytics](docs/workshops/ws06_data_analytics.md) — JSON/XML Експорт
-7. [Auth & Security](docs/workshops/ws07_auth_security.md) — Хешування (SHA-256)
-8. [Game Logic (AI)](docs/workshops/ws08_game_logic.md) — Алгоритми рішень
-9. [Weather API](docs/workshops/ws09_weather_api.md) — Fetch та REST
+7. [Weather API](docs/workshops/ws07_weather_api.md) — Fetch та REST
+8. [Auth & Security](docs/workshops/ws08_auth_security.md) — Хешування (SHA-256)
+9. [Game Logic (AI)](docs/workshops/ws09_game_logic.md) — Алгоритми рішень
 
 ### Довідкові матеріали
 - [FAQ & Troubleshooting](docs/faq_troubleshooting.md) — Типові проблеми та рішення
