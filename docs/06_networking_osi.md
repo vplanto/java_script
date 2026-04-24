@@ -2,15 +2,7 @@
 
 ## Презентація (NotebookLM)
 
-Слайди зібрані в одному PDF поруч із матеріалом лекції, щоб можна було відкрити їх з того ж місця, що й конспект.
-
-- **[Internet_Architecture_Blueprint.pdf](assets/Internet_Architecture_Blueprint.pdf)** — у Cursor / VS Code: `Ctrl`+клік по посиланню (або контекстне меню → Open Link). Для показу з екрана зручно відкрити той самий файл у повноекранному переглядачі PDF або використати експорт `.pptx`, якщо він у вас є.
-
-Якщо PDF ще лежить у `tmp/`, один раз скопіюйте його в `docs/assets/` (з кореня репозиторію, Linux / WSL):
-
-```bash
-mkdir -p docs/assets && cp tmp/Internet_Architecture_Blueprint.pdf docs/assets/
-```
+Слайди зібрані в одному PDF поруч із матеріалом лекції, щоб можна було відкрити їх з того ж місця, що й конспект: [Internet_Architecture_Blueprint.pdf](assets/Internet_Architecture_Blueprint.pdf).
 
 ---
 
