@@ -8,7 +8,7 @@
 ## Вступ та філософія
 
 1. [Лекція 0: Маніфест. Інженер проти кодера. Азімов і ШІ](00_manifesto.md)
-2. **[Воркшоп 0: Hive Mind Architecture. Технічний бриф курсового проєкту](n00_HiveMind_Workshop.md)**
+2. **[Воркшоп 0: Hive Mind Architecture. Технічний бриф курсового проєкту](workshops/hive/n00_HiveMind_Workshop.md)**
 
 ---
 
@@ -95,10 +95,11 @@
 
 ## Фінал: курсовий проєкт «Hive Mind»
 
-*Технічний бриф і архітектура курсового — у [Воркшопі 0](n00_HiveMind_Workshop.md) на початку; тут — логічне завершення траєкторії курсу.*
+*Технічний бриф і архітектура курсового — у [Воркшопі 0](workshops/hive/n00_HiveMind_Workshop.md) на початку; тут — логічне завершення траєкторії курсу.*
 
-22. **[Імплементація курсового проєкту «Hive Mind»](n00_HiveMind_Workshop.md)**  
-    *Додатково: [налаштування Google Classroom для Hive Mind](workshops/hive_mind_google_classroom_setup.md)*
+23. [Лабораторна: Hive Mind Starter — вставка коду та мінімальні правки](workshops/hive/n05_hive_mind_starter_lab.md)
+24. **[Імплементація курсового проєкту «Hive Mind»](workshops/hive/n00_HiveMind_Workshop.md)**  
+    *Додатково: [налаштування Google Classroom для Hive Mind](workshops/hive/hive_mind_google_classroom_setup.md)*
 
 ---
 
@@ -107,6 +108,7 @@
 - [Налаштування середовища (VS Code, Git)](n01_setup.md)
 - [Шпаргалка по Markdown](n02_markdown.md)
 - [Git Guide: як не втратити код і здати лабу](n03_git_basics.md)
+- [Лабораторна: Hive Mind Starter (n05)](workshops/hive/n05_hive_mind_starter_lab.md)
 - [Екзаменаційний пул питань](exam.md)
 - [FAQ & Troubleshooting: типові помилки](faq_troubleshooting.md)
 - [TODO: план розробки курсу](todo.md)

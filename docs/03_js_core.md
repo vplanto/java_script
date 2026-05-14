@@ -334,7 +334,7 @@ boom();
 
 ### Hive Mind — крок 1: Grid (пам'ять світу)
 
-Спочатку має бути розгорнуто стартер: **fork → clone → `npm install` → `npm run dev`** — готовий текст для Google Classroom: [hive_mind_google_classroom_setup.md](workshops/hive_mind_google_classroom_setup.md). Репозиторій: [hive-mind-starter](https://github.com/vplanto/hive-mind-starter).
+Спочатку має бути розгорнуто стартер: **fork → clone → `npm install` → `npm run dev`** — готовий текст для Google Classroom: [hive_mind_google_classroom_setup.md](workshops/hive/hive_mind_google_classroom_setup.md). Репозиторій: [hive-mind-starter](https://github.com/vplanto/hive-mind-starter).
 
 Відкрийте стартер-кіт у VS Code та файл `src/models/Grid.js`.
 
