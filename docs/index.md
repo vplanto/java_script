@@ -74,7 +74,7 @@
 ### HTTP і практика зовнішнього API
 16. [Лекція 6: Архітектура Інтернету. Модель OSI, TCP/IP та DNS](06_networking_osi.md)
 17. [Лекція 7: HTTP/S та REST. Анатомія запиту](07_http_rest.md)
-18. **[Воркшоп 6: Weather API. Робота з реальними даними та fetch()](workshops/ws09_weather_api.md)**
+18. **[Воркшоп 6: Weather API. Робота з реальними даними та fetch()](workshops/ws07_weather_api.md)**
     *(Асинхронність, HTTP-статуси та небезпека зберігання ключів)*
 
 ---
