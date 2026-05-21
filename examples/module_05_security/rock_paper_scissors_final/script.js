@@ -70,22 +70,7 @@ const historyTableBody = document.querySelector('#history-table tbody');
 
 // --- Функції-хелпери ---
 
-/**
- * Хешує пароль за допомогою SHA-256.
- * @param {string} password - Пароль для хешування.
- * @returns {Promise<string>} Хеш пароля у шістнадцятковому форматі.
- */
-async function hashPassword(password) {
-    const textEncoder = new TextEncoder();
-    const data = textEncoder.encode(password);
-    // Web Crypto API (crypto.subtle) вимагає безпечного контексту (HTTPS)
-    // або localhost для деяких операцій. Якщо ви запускаєте файл напряму (file://),
-    // це може викликати помилку.
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashedPassword;
-}
+
 
 /**
  * Перевіряє доступність localStorage.
@@ -250,7 +235,7 @@ function updateStatsDisplay() {
  * Оновлює кнопки вибору предметів гри.
  */
 function updatePlayerChoiceButtons() {
-    playerChoiceButtonsDiv.innerHTML = '';
+    playerChoiceButtonsDiv.textContent = '';
     currentItems.forEach(item => {
         const button = document.createElement('button');
         button.textContent = item;
@@ -261,6 +246,47 @@ function updatePlayerChoiceButtons() {
 }
 
 // --- Функції управління користувачами ---
+
+/**
+ * Валідує вхідні дані за допомогою регулярних виразів.
+ * @param {string} input - Рядок для валідації.
+ * @param {string} type - Тип поля ('nickname' або 'email').
+ * @returns {boolean} True, якщо валідація успішна.
+ */
+function validateInput(input, type) {
+    if (type === 'nickname') {
+        const nicknameRegex = /^[a-zA-Z0-9_]{3,15}$/;
+        return nicknameRegex.test(input);
+    } else if (type === 'email') {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(input);
+    }
+    return false;
+}
+
+/**
+ * Генерує випадкову сіль (salt) для хешування паролів.
+ * @returns {string} Сіль у шістнадцятковому форматі.
+ */
+function generateSalt() {
+    const array = new Uint8Array(16);
+    crypto.getRandomValues(array);
+    return Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Хешує пароль разом із сіллю за допомогою SHA-256.
+ * @param {string} password - Пароль для хешування.
+ * @param {string} salt - Сіль у шістнадцятковому форматі.
+ * @returns {Promise<string>} Хеш пароля.
+ */
+async function hashPassword(password, salt) {
+    const textEncoder = new TextEncoder();
+    const data = textEncoder.encode(password + salt);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 /**
  * Обробляє реєстрацію нового користувача.
@@ -274,6 +300,18 @@ async function registerUser(event) {
     const nickname = document.getElementById('reg-nickname').value;
     const password = document.getElementById('reg-password').value;
 
+    // Валідація нікнейму та email для запобігання ін'єкціям на етапі введення
+    if (!validateInput(nickname, 'nickname')) {
+        registrationMessage.textContent = 'Нікнейм має містити від 3 до 15 символів (лише латиниця, цифри та підкреслення).';
+        registrationMessage.classList.remove('success');
+        return;
+    }
+    if (!validateInput(email, 'email')) {
+        registrationMessage.textContent = 'Некоректний формат електронної пошти.';
+        registrationMessage.classList.remove('success');
+        return;
+    }
+
     if (users.some(user => user.nickname === nickname)) {
         registrationMessage.textContent = 'Користувач з таким ніком вже існує!';
         registrationMessage.classList.remove('success');
@@ -281,13 +319,13 @@ async function registerUser(event) {
         return;
     }
 
+    const salt = generateSalt();
     let hashedPassword;
     try {
-        hashedPassword = await hashPassword(password);
-        console.log('Registered password hashed:', hashedPassword);
+        hashedPassword = await hashPassword(password, salt);
     } catch (error) {
         console.error('Error hashing password during registration:', error);
-        registrationMessage.textContent = 'Помилка хешування пароля. Перевірте консоль браузера (F12). Можливо, Web Crypto API не працює у небезпечному контексті (наприклад, file://).';
+        registrationMessage.textContent = 'Помилка хешування пароля. Перевірте консоль браузера.';
         registrationMessage.classList.remove('success');
         return;
     }
@@ -298,6 +336,7 @@ async function registerUser(event) {
         email,
         nickname,
         passwordHash: hashedPassword,
+        salt: salt,
         stats: { wins: 0, losses: 0, ties: 0, totalGames: 0 },
         playerMoveHistory: {} // Історія ходів для адаптивного AI
     };
@@ -318,6 +357,13 @@ async function loginUser(event) {
     const nickname = document.getElementById('login-nickname').value;
     const password = document.getElementById('login-password').value;
 
+    // Валідація нікнейму
+    if (!validateInput(nickname, 'nickname')) {
+        loginMessage.textContent = 'Некоректний формат нікнейму.';
+        loginMessage.classList.remove('success');
+        return;
+    }
+
     console.log('Attempting login for nickname:', nickname);
 
     const user = users.find(u => u.nickname === nickname);
@@ -332,29 +378,34 @@ async function loginUser(event) {
 
     let hashedPassword;
     try {
-        hashedPassword = await hashPassword(password);
-        console.log('Entered password hashed:', hashedPassword);
+        const userSalt = user.salt || '';
+        hashedPassword = await hashPassword(password, userSalt);
     } catch (error) {
         console.error('Error hashing password during login:', error);
-        loginMessage.textContent = 'Помилка хешування пароля. Перевірте консоль браузера (F12). Можливо, Web Crypto API не працює у небезпечному контексті (наприклад, file://).';
+        loginMessage.textContent = 'Помилка при перевірці пароля.';
         loginMessage.classList.remove('success');
         return;
     }
 
-    console.log('Stored password hash:', user.passwordHash);
-    console.log('Comparison result:', user.passwordHash === hashedPassword);
+    const storedHash = user.passwordHash || user.password;
+    const isMatch = (user.salt && user.passwordHash === hashedPassword) || (!user.salt && storedHash === password);
 
-    if (user.passwordHash === hashedPassword) {
+    if (isMatch) {
         currentUser = user;
-        // Ensure playerMoveHistory is initialized if it's null/undefined for older users
+        // Лінива міграція старих записів на salted hash
+        if (!user.salt) {
+            user.salt = generateSalt();
+            user.passwordHash = await hashPassword(password, user.salt);
+            delete user.password;
+            saveData();
+        }
         currentUser.playerMoveHistory = currentUser.playerMoveHistory || {};
-        playerMoveHistory = currentUser.playerMoveHistory; // Завантажуємо історію ходів гравця
+        playerMoveHistory = currentUser.playerMoveHistory;
         displayWelcomeMessage();
         showSection('welcome-section');
-        loginMessage.textContent = ''; // Очистити повідомлення
+        loginMessage.textContent = '';
         loginForm.reset();
         console.log('Login successful for user:', currentUser.nickname);
-        // Зберігаємо останнього залогіненого користувача, щоб вітати його при наступному відкритті
         localStorage.setItem('lastLoggedInUser', currentUser.nickname);
     } else {
         loginMessage.textContent = 'Невірний пароль.';
@@ -365,10 +416,11 @@ async function loginUser(event) {
 
 /**
  * Відображає привітальне повідомлення та статистику для залогіненого користувача.
+ * Запобігає XSS шляхом заміни innerHTML на textContent.
  */
 function displayWelcomeMessage() {
     if (currentUser) {
-        welcomeMessage.textContent = `Ласкаво просимо, ${currentUser.nickname}!`;
+        welcomeMessage.textContent = `Ласкаво просимо, ${currentUser.pib}!`;
         updateStatsDisplay();
     }
 }
@@ -382,6 +434,69 @@ function logoutUser() {
     localStorage.removeItem('lastLoggedInUser'); // Видалити останнього залогіненого користувача
     showSection('auth-section');
     console.log('User logged out.');
+}
+
+/**
+ * Оновлює email поточного користувача.
+ * @param {string} newEmail - Нова електронна адреса.
+ */
+function updateUserEmail(newEmail) {
+    if (currentUser) {
+        // Додаткова валідація при зміні пошти
+        if (!validateInput(newEmail, 'email')) {
+            alert('Некоректний формат email.');
+            return;
+        }
+        currentUser.email = newEmail;
+        saveData();
+        console.log(`Email updated to: ${newEmail}`);
+    }
+}
+
+/**
+ * Шукає користувача за нікнеймом.
+ * Безпечна реалізація для запобігання ін'єкціям.
+ * @param {string} nameQuery - Запит нікнейму для пошуку.
+ * @returns {Array} Список знайдених об'єктів користувачів.
+ */
+function findUserByNickname(nameQuery) {
+    // Повністю видалено eval(), замінено безпечним прямим порівнянням
+    return users.filter(user => user.nickname === nameQuery);
+}
+
+/**
+ * Обробляє подію пошуку користувача в інтерфейсі.
+ * Запобігає XSS шляхом безпечного створення DOM-елементів та використання textContent.
+ */
+function searchUser() {
+    const query = document.getElementById('search-nickname').value;
+    const searchMessage = document.getElementById('search-message');
+    
+    // Очищення попередніх повідомлень
+    searchMessage.textContent = '';
+    
+    // Валідація нікнейму для пошуку
+    if (query && !validateInput(query, 'nickname')) {
+        searchMessage.classList.remove('success');
+        searchMessage.textContent = 'Некоректний нікнейм для пошуку (дозволено лише латиницю, цифри та _).';
+        return;
+    }
+
+    console.log('Searching for users with query:', query);
+    const results = findUserByNickname(query);
+    
+    if (results && results.length > 0) {
+        searchMessage.classList.add('success');
+        // Безпечний вивід даних користувача через створення DOM елементів з textContent
+        results.forEach(u => {
+            const div = document.createElement('div');
+            div.textContent = `Знайдено: ${u.nickname} (${u.pib}, ${u.email})`;
+            searchMessage.appendChild(div);
+        });
+    } else {
+        searchMessage.classList.remove('success');
+        searchMessage.textContent = 'Користувачів не знайдено.';
+    }
 }
 
 // --- Логіка гри ---
@@ -635,7 +750,7 @@ function endGame() {
  * Відображає історію ігор у таблиці.
  */
 function displayGameHistory() {
-    historyTableBody.innerHTML = ''; // Очистити попередні записи
+    historyTableBody.textContent = ''; // Очистити попередні записи
     const userGames = gameHistory.filter(game => game.nickname === currentUser.nickname);
 
     userGames.forEach(game => {
@@ -685,6 +800,13 @@ function initApp() {
     document.getElementById('start-new-game-btn').addEventListener('click', () => showSection('game-setup-section'));
     document.getElementById('view-game-history-btn').addEventListener('click', displayGameHistory);
     document.getElementById('logout-btn').addEventListener('click', logoutUser);
+    document.getElementById('update-email-btn').addEventListener('click', () => {
+        const newEmail = prompt('Введіть новий email:', currentUser ? currentUser.email : '');
+        if (newEmail) {
+            updateUserEmail(newEmail);
+        }
+    });
+    document.getElementById('search-btn').addEventListener('click', searchUser);
     document.getElementById('start-game-btn').addEventListener('click', startGame);
     document.getElementById('back-to-welcome-btn').addEventListener('click', () => {
         updateStatsDisplay();

@@ -1,49 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather Dashboard</title>
-  <style>
-    /* Basic styling for a neat presentation */
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 1rem;
-      margin: 5px;
-    }
-    #weatherDisplay {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Weather Dashboard</h1>
-    <div>
-      <label for="city">Enter City Name:</label>
-      <input type="text" id="city" placeholder="e.g. Odesa" />
-      <button id="getWeatherBtn">Get Weather</button>
-    </div>
-    <!-- This is where the weather data will be displayed -->
-    <div id="weatherDisplay"></div>
-  </div>
-
-  <!-- Link to the JavaScript file -->
-  <script src="script.js"></script>
-</body>
+<!doctype html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Weather Dashboard</title>
+        <style>
+            body {
+                font-family: system-ui, sans-serif;
+                display: flex;
+                justify-content: center;
+                padding: 2rem 1rem;
+                margin: 0;
+                background: #f4f6f8;
+            }
+            .card {
+                width: min(360px, 100%);
+                border: 1px solid #ddd;
+                padding: 1.5rem;
+                border-radius: 12px;
+                background: #fff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+            h2 {
+                margin-top: 0;
+            }
+            label {
+                display: block;
+                font-size: 0.85rem;
+                margin-bottom: 0.35rem;
+                color: #444;
+            }
+            input,
+            button {
+                padding: 10px;
+                width: 100%;
+                margin-bottom: 10px;
+                box-sizing: border-box;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+            }
+            button {
+                background: #007bff;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                font-weight: 600;
+            }
+            button:hover {
+                background: #0056b3;
+            }
+            button:disabled {
+                opacity: 0.6;
+                cursor: wait;
+            }
+            .error {
+                color: #c00;
+                font-size: 0.9rem;
+            }
+            #weatherDisplay {
+                margin-top: 0.5rem;
+                min-height: 4rem;
+            }
+            .weather-head {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            .weather-head img {
+                width: 64px;
+                height: 64px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h2>Погода</h2>
+            <label for="cityInput">Місто</label>
+            <input
+                type="text"
+                id="cityInput"
+                placeholder="Наприклад: Odesa"
+                autocomplete="off"
+            />
+            <button type="button" id="getWeatherBtn">Отримати погоду</button>
+            <div id="weatherDisplay" aria-live="polite"></div>
+        </div>
+        <script src="weather.js"></script>
+    </body>
 </html>

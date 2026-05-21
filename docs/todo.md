@@ -51,7 +51,7 @@
 
 ## Module 5: Security & Final Project
 ### Воркшоп 8: Auth & Security (`ws08_auth_security.md`)
-- [ ] **Додати Task: Client-Side Form Validation.**
+- [x] **Додати Task: Client-Side Form Validation.** (Реалізовано через ручну перевірку регулярними виразами для нікнеймів та email у формах реєстрації, входу та пошуку).
     - Валідація *до* відправки запиту (UX + Security layer 1).
     - *Tech:* HTML5 Constraint Validation API (`checkValidity()`, `setCustomValidity`) або RegEx вручну.
     - *Anti-pattern:* Не відправляти запит на сервер, якщо пароль коротший за 8 символів.

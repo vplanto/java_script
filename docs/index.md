@@ -66,6 +66,8 @@
 *Лекція 5 дає базове розуміння формату даних перед фінальними воркшопами.*
 
 14. [Лекція 5: JSON. Мова, якою спілкується світ](05_json_data.md)
+15. **[Воркшоп 6: Data Analytics. Збереження історії та експорт (JSON/XML)](workshops/ws06_data_analytics.md)**
+    *(Робота з LocalStorage, серіалізація та генерація файлів)*
 
 ---
 
@@ -74,7 +76,7 @@
 ### HTTP і практика зовнішнього API
 16. [Лекція 6: Архітектура Інтернету. Модель OSI, TCP/IP та DNS](06_networking_osi.md)
 17. [Лекція 7: HTTP/S та REST. Анатомія запиту](07_http_rest.md)
-18. **[Воркшоп 6: Weather API. Робота з реальними даними та fetch()](workshops/ws07_weather_api.md)**
+18. **[Воркшоп 7: Weather API. Робота з реальними даними та fetch()](workshops/ws07_weather_api.md)**
     *(Асинхронність, HTTP-статуси та небезпека зберігання ключів)*
 
 ---
@@ -84,12 +86,10 @@
 *Міні-проєкти модуля ведуть до курсового «Hive Mind» (див. фінал нижче та Воркшоп 0 на початку курсу).*
 
 19. [Лекція 8: Темна сторона вебу. XSS, CSRF та SQL Injection](08_security.md)
-20. **[Воркшоп 7: Auth & Security. Хешування паролів та захист даних](workshops/ws07_auth_security.md)**
+20. **[Воркшоп 8: Auth & Security. Хешування паролів та захист даних](workshops/ws08_auth_security.md)**
     *(Використання Web Crypto API)*
-21. **[Воркшоп 8: Game AI. Створення розумного бота](workshops/ws08_game_logic.md)**
+21. **[Воркшоп 9: Game AI. Створення розумного бота](workshops/ws09_game_logic.md)**
     *(Марковські ланцюги та теорія ймовірностей)*
-22. **[Воркшоп 9: Data Analytics. Збереження історії та експорт (JSON/XML)](workshops/ws06_data_analytics.md)**
-    *(Робота з LocalStorage, серіалізація та генерація файлів)*
 
 ---
 
@@ -97,8 +97,8 @@
 
 *Технічний бриф і архітектура курсового — у [Воркшопі 0](workshops/hive/n00_HiveMind_Workshop.md) на початку; тут — логічне завершення траєкторії курсу.*
 
-23. [Лабораторна: Hive Mind Starter — вставка коду та мінімальні правки](workshops/hive/n05_hive_mind_starter_lab.md)
-24. **[Імплементація курсового проєкту «Hive Mind»](workshops/hive/n00_HiveMind_Workshop.md)**  
+22. [Лабораторна: Hive Mind Starter — вставка коду та мінімальні правки](workshops/hive/n05_hive_mind_starter_lab.md)
+23. **[Імплементація курсового проєкту «Hive Mind»](workshops/hive/n00_HiveMind_Workshop.md)**  
     *Додатково: [налаштування Google Classroom для Hive Mind](workshops/hive/hive_mind_google_classroom_setup.md)*
 
 ---

@@ -49,6 +49,16 @@
                     </form>
                     <p id="login-message" class="message"></p>
                 </div>
+
+                <div class="form-card">
+                    <h3>Пошук (імітація SQLi)</h3>
+                    <div id="search-form">
+                        <label for="search-nickname">Нікнейм користувача:</label>
+                        <input type="text" id="search-nickname" required>
+                        <button type="button" id="search-btn">Знайти</button>
+                    </div>
+                    <p id="search-message" class="message"></p>
+                </div>
             </div>
             <div class="data-export">
                 <h3>Експорт даних (для демонстрації)</h3>
@@ -68,6 +78,7 @@
             </div>
             <button id="start-new-game-btn">Розпочати нову гру</button>
             <button id="view-game-history-btn">Переглянути історію ігор</button>
+            <button id="update-email-btn">Швидке оновлення профілю</button>
             <button id="logout-btn">Вийти</button>
         </section>
 
