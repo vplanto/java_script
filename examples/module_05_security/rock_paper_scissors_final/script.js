@@ -1,27 +1,27 @@
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener("DOMContentLoaded", initApp);
 
 // --- Глобальні змінні стану гри та користувачів ---
-let users =[]; // Масив об'єктів користувачів - ВИПРАВЛЕНО
+let users = []; // Масив об'єктів користувачів - ВИПРАВЛЕНО
 let currentUser = null; // Об'єкт поточного залогіненого користувача
-let gameHistory =[]; // Масив об'єктів історії ігор
+let gameHistory = []; // Масив об'єктів історії ігор
 
-const GAME_ITEMS = ['Камінь', 'Ножиці', 'Папір'];
-const RPSLS_ITEMS = ['Камінь', 'Ножиці', 'Папір', 'Ящірка', 'Спок'];
+const GAME_ITEMS = ["Камінь", "Ножиці", "Папір"];
+const RPSLS_ITEMS = ["Камінь", "Ножиці", "Папір", "Ящірка", "Спок"];
 
 // Правила для Камінь-Ножиці-Папір
 const RPS_RULES = {
-    'Камінь': 'Ножиці',
-    'Ножиці': 'Папір',
-    'Папір': 'Камінь'
+    Камінь: "Ножиці",
+    Ножиці: "Папір",
+    Папір: "Камінь",
 };
 
 // Правила для Камінь-Ножиці-Папір-Ящірка-Спок
 const RPSLS_RULES = {
-    'Камінь': ['Ножиці', 'Ящірка'],
-    'Ножиці': ['Папір', 'Ящірка'],
-    'Папір': ['Камінь', 'Спок'],
-    'Ящірка': ['Спок', 'Папір'],
-    'Спок': ['Ножиці', 'Камінь']
+    Камінь: ["Ножиці", "Ящірка"],
+    Ножиці: ["Папір", "Ящірка"],
+    Папір: ["Камінь", "Спок"],
+    Ящірка: ["Спок", "Папір"],
+    Спок: ["Ножиці", "Камінь"],
 };
 
 let currentItems = GAME_ITEMS; // Поточний набір предметів гри
@@ -35,42 +35,43 @@ let computerScore = 0;
 let playerMoveHistory = {};
 
 // --- Елементи DOM ---
-const authSection = document.getElementById('auth-section');
-const welcomeSection = document.getElementById('welcome-section');
-const gameSetupSection = document.getElementById('game-setup-section');
-const gamePlaySection = document.getElementById('game-play-section');
-const gameResultsSection = document.getElementById('game-results-section');
-const gameHistorySection = document.getElementById('game-history-section');
+const authSection = document.getElementById("auth-section");
+const welcomeSection = document.getElementById("welcome-section");
+const gameSetupSection = document.getElementById("game-setup-section");
+const gamePlaySection = document.getElementById("game-play-section");
+const gameResultsSection = document.getElementById("game-results-section");
+const gameHistorySection = document.getElementById("game-history-section");
 
-const registrationForm = document.getElementById('registration-form');
-const loginForm = document.getElementById('login-form');
-const registrationMessage = document.getElementById('registration-message');
-const loginMessage = document.getElementById('login-message');
+const registrationForm = document.getElementById("registration-form");
+const loginForm = document.getElementById("login-form");
+const registrationMessage = document.getElementById("registration-message");
+const loginMessage = document.getElementById("login-message");
 
-const welcomeMessage = document.getElementById('welcome-message');
-const statsWins = document.getElementById('stats-wins');
-const statsLosses = document.getElementById('stats-losses');
-const statsTies = document.getElementById('stats-ties');
-const statsTotalGames = document.getElementById('stats-total-games');
+const welcomeMessage = document.getElementById("welcome-message");
+const statsWins = document.getElementById("stats-wins");
+const statsLosses = document.getElementById("stats-losses");
+const statsTies = document.getElementById("stats-ties");
+const statsTotalGames = document.getElementById("stats-total-games");
 
-const aiLevelSelect = document.getElementById('ai-level');
-const gameItemsSelect = document.getElementById('game-items-select');
-const numRoundsInput = document.getElementById('num-rounds');
-const playerChoiceButtonsDiv = document.getElementById('player-choice-buttons');
+const aiLevelSelect = document.getElementById("ai-level");
+const gameItemsSelect = document.getElementById("game-items-select");
+const numRoundsInput = document.getElementById("num-rounds");
+const playerChoiceButtonsDiv = document.getElementById("player-choice-buttons");
+const choicesTitle = document.getElementById("choices-title");
 
-const currentRoundDisplay = document.getElementById('current-round-display');
-const totalRoundsDisplay = document.getElementById('total-rounds-display');
-const playerScoreDisplay = document.getElementById('player-score');
-const computerScoreDisplay = document.getElementById('computer-score');
-const roundResultDisplay = document.getElementById('round-result');
-const playerChoiceDisplay = document.getElementById('player-choice-display');
-const computerChoiceDisplay = document.getElementById('computer-choice-display');
-const finalGameResultDisplay = document.getElementById('final-game-result');
-const historyTableBody = document.querySelector('#history-table tbody');
+const currentRoundDisplay = document.getElementById("current-round-display");
+const totalRoundsDisplay = document.getElementById("total-rounds-display");
+const playerScoreDisplay = document.getElementById("player-score");
+const computerScoreDisplay = document.getElementById("computer-score");
+const roundResultDisplay = document.getElementById("round-result");
+const playerChoiceDisplay = document.getElementById("player-choice-display");
+const computerChoiceDisplay = document.getElementById(
+    "computer-choice-display",
+);
+const finalGameResultDisplay = document.getElementById("final-game-result");
+const historyTableBody = document.querySelector("#history-table tbody");
 
 // --- Функції-хелпери ---
-
-
 
 /**
  * Перевіряє доступність localStorage.
@@ -81,7 +82,7 @@ function storageAvailable(type) {
     let storage;
     try {
         storage = window[type];
-        const x = '__storage_test__';
+        const x = "__storage_test__";
         storage.setItem(x, x);
         storage.removeItem(x);
         return true;
@@ -89,7 +90,8 @@ function storageAvailable(type) {
         return (
             e instanceof DOMException &&
             (e.code === 22 || e.code === 1014) && // QuotaExceededError
-            storage && storage.length!== 0
+            storage &&
+            storage.length !== 0
         );
     }
 }
@@ -99,18 +101,27 @@ function storageAvailable(type) {
  * Зберігає також XML та JSON представлення даних.
  */
 function saveData() {
-    if (storageAvailable('localStorage')) {
-        localStorage.setItem('users', JSON.stringify(users));
-        localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
+    if (storageAvailable("localStorage")) {
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("gameHistory", JSON.stringify(gameHistory));
 
         // Зберігаємо дані у форматі JSON та XML для демонстрації
-        localStorage.setItem('users_json_data', JSON.stringify(users, null, 2));
-        localStorage.setItem('gameHistory_json_data', JSON.stringify(gameHistory, null, 2));
+        localStorage.setItem("users_json_data", JSON.stringify(users, null, 2));
+        localStorage.setItem(
+            "gameHistory_json_data",
+            JSON.stringify(gameHistory, null, 2),
+        );
 
-        localStorage.setItem('users_xml_data', jsonToXml(users, 'users', 'user'));
-        localStorage.setItem('gameHistory_xml_data', jsonToXml(gameHistory, 'gameHistory', 'game'));
+        localStorage.setItem(
+            "users_xml_data",
+            jsonToXml(users, "users", "user"),
+        );
+        localStorage.setItem(
+            "gameHistory_xml_data",
+            jsonToXml(gameHistory, "gameHistory", "game"),
+        );
     } else {
-        console.warn('localStorage недоступний.');
+        console.warn("localStorage недоступний.");
     }
 }
 
@@ -118,9 +129,9 @@ function saveData() {
  * Завантажує дані користувачів та історію ігор з localStorage.
  */
 function loadData() {
-    if (storageAvailable('localStorage')) {
-        const storedUsers = localStorage.getItem('users');
-        const storedGameHistory = localStorage.getItem('gameHistory');
+    if (storageAvailable("localStorage")) {
+        const storedUsers = localStorage.getItem("users");
+        const storedGameHistory = localStorage.getItem("gameHistory");
 
         if (storedUsers) {
             users = JSON.parse(storedUsers);
@@ -139,16 +150,16 @@ function loadData() {
  * @param {string} itemElement - Назва елемента для кожного елемента масиву.
  * @returns {string} XML рядок.
  */
-function jsonToXml(data, rootElement = 'root', itemElement = 'item') {
+function jsonToXml(data, rootElement = "root", itemElement = "item") {
     let xml = `<${rootElement}>`;
     if (Array.isArray(data)) {
-        data.forEach(item => {
+        data.forEach((item) => {
             xml += `<${itemElement}>`;
             for (const key in item) {
                 if (Object.prototype.hasOwnProperty.call(item, key)) {
                     // Проста обробка вкладених об'єктів для демонстрації
-                    if (typeof item[key] === 'object' && item[key] !== null) {
-                        xml += `<${key}>${jsonToXml(item[key], '', '')}</${key}>`;
+                    if (typeof item[key] === "object" && item[key] !== null) {
+                        xml += `<${key}>${jsonToXml(item[key], "", "")}</${key}>`;
                     } else {
                         xml += `<${key}>${item[key]}</${key}>`;
                     }
@@ -156,11 +167,11 @@ function jsonToXml(data, rootElement = 'root', itemElement = 'item') {
             }
             xml += `</${itemElement}>`;
         });
-    } else if (typeof data === 'object' && data!== null) {
+    } else if (typeof data === "object" && data !== null) {
         for (const key in data) {
             if (Object.prototype.hasOwnProperty.call(data, key)) {
-                if (typeof data[key] === 'object' && data[key]!== null) {
-                    xml += `<${key}>${jsonToXml(data[key], '', '')}</${key}>`;
+                if (typeof data[key] === "object" && data[key] !== null) {
+                    xml += `<${key}>${jsonToXml(data[key], "", "")}</${key}>`;
                 } else {
                     xml += `<${key}>${data[key]}</${key}>`;
                 }
@@ -184,14 +195,14 @@ function xmlToJson(xmlString) {
     const root = xmlDoc.documentElement;
 
     if (root) {
-        Array.from(root.children).forEach(child => {
+        Array.from(root.children).forEach((child) => {
             if (child.children.length > 0) {
                 const item = {};
-                Array.from(child.children).forEach(grandchild => {
+                Array.from(child.children).forEach((grandchild) => {
                     item[grandchild.tagName] = grandchild.textContent;
                 });
                 if (!obj[child.tagName]) {
-                    obj[child.tagName] =child.textContent;
+                    obj[child.tagName] = child.textContent;
                 }
                 obj[child.tagName].push(item);
             } else {
@@ -207,14 +218,14 @@ function xmlToJson(xmlString) {
  * @param {string} sectionId - ID розділу для відображення.
  */
 function showSection(sectionId) {
-    const sections =document.querySelectorAll('section');
-    sections.forEach(section => {
+    const sections = document.querySelectorAll("section");
+    sections.forEach((section) => {
         if (section.id === sectionId) {
-            section.classList.add('active-section');
-            section.classList.remove('hidden-section');
+            section.classList.add("active-section");
+            section.classList.remove("hidden-section");
         } else {
-            section.classList.add('hidden-section');
-            section.classList.remove('active-section');
+            section.classList.add("hidden-section");
+            section.classList.remove("active-section");
         }
     });
 }
@@ -235,58 +246,19 @@ function updateStatsDisplay() {
  * Оновлює кнопки вибору предметів гри.
  */
 function updatePlayerChoiceButtons() {
-    playerChoiceButtonsDiv.textContent = '';
-    currentItems.forEach(item => {
-        const button = document.createElement('button');
+    playerChoiceButtonsDiv.textContent = "";
+    currentItems.forEach((item) => {
+        const button = document.createElement("button");
         button.textContent = item;
-        button.classList.add('game-choice-btn');
-        button.addEventListener('click', () => playRound(item));
+        button.classList.add("game-choice-btn");
+        button.addEventListener("click", () => playRound(item));
         playerChoiceButtonsDiv.appendChild(button);
     });
 }
 
 // --- Функції управління користувачами ---
 
-/**
- * Валідує вхідні дані за допомогою регулярних виразів.
- * @param {string} input - Рядок для валідації.
- * @param {string} type - Тип поля ('nickname' або 'email').
- * @returns {boolean} True, якщо валідація успішна.
- */
-function validateInput(input, type) {
-    if (type === 'nickname') {
-        const nicknameRegex = /^[a-zA-Z0-9_]{3,15}$/;
-        return nicknameRegex.test(input);
-    } else if (type === 'email') {
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        return emailRegex.test(input);
-    }
-    return false;
-}
 
-/**
- * Генерує випадкову сіль (salt) для хешування паролів.
- * @returns {string} Сіль у шістнадцятковому форматі.
- */
-function generateSalt() {
-    const array = new Uint8Array(16);
-    crypto.getRandomValues(array);
-    return Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-/**
- * Хешує пароль разом із сіллю за допомогою SHA-256.
- * @param {string} password - Пароль для хешування.
- * @param {string} salt - Сіль у шістнадцятковому форматі.
- * @returns {Promise<string>} Хеш пароля.
- */
-async function hashPassword(password, salt) {
-    const textEncoder = new TextEncoder();
-    const data = textEncoder.encode(password + salt);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
 
 /**
  * Обробляє реєстрацію нового користувача.
@@ -294,39 +266,17 @@ async function hashPassword(password, salt) {
  */
 async function registerUser(event) {
     event.preventDefault();
-    const pib = document.getElementById('reg-pib').value;
-    const dob = document.getElementById('reg-dob').value;
-    const email = document.getElementById('reg-email').value;
-    const nickname = document.getElementById('reg-nickname').value;
-    const password = document.getElementById('reg-password').value;
+    const pib = document.getElementById("reg-pib").value;
+    const dob = document.getElementById("reg-dob").value;
+    const email = document.getElementById("reg-email").value;
+    const nickname = document.getElementById("reg-nickname").value;
+    const password = document.getElementById("reg-password").value;
 
-    // Валідація нікнейму та email для запобігання ін'єкціям на етапі введення
-    if (!validateInput(nickname, 'nickname')) {
-        registrationMessage.textContent = 'Нікнейм має містити від 3 до 15 символів (лише латиниця, цифри та підкреслення).';
-        registrationMessage.classList.remove('success');
-        return;
-    }
-    if (!validateInput(email, 'email')) {
-        registrationMessage.textContent = 'Некоректний формат електронної пошти.';
-        registrationMessage.classList.remove('success');
-        return;
-    }
 
-    if (users.some(user => user.nickname === nickname)) {
-        registrationMessage.textContent = 'Користувач з таким ніком вже існує!';
-        registrationMessage.classList.remove('success');
-        console.log('Registration failed: Nickname already exists.');
-        return;
-    }
-
-    const salt = generateSalt();
-    let hashedPassword;
-    try {
-        hashedPassword = await hashPassword(password, salt);
-    } catch (error) {
-        console.error('Error hashing password during registration:', error);
-        registrationMessage.textContent = 'Помилка хешування пароля. Перевірте консоль браузера.';
-        registrationMessage.classList.remove('success');
+    if (users.some((user) => user.nickname === nickname)) {
+        registrationMessage.textContent = "Користувач з таким ніком вже існує!";
+        registrationMessage.classList.remove("success");
+        console.log("Registration failed: Nickname already exists.");
         return;
     }
 
@@ -335,17 +285,17 @@ async function registerUser(event) {
         dob,
         email,
         nickname,
-        passwordHash: hashedPassword,
-        salt: salt,
+        password: password, // Збереження пароля у відкритому вигляді
         stats: { wins: 0, losses: 0, ties: 0, totalGames: 0 },
-        playerMoveHistory: {} // Історія ходів для адаптивного AI
+        playerMoveHistory: {}, // Історія ходів для адаптивного AI
     };
     users.push(newUser);
     saveData();
-    registrationMessage.textContent = 'Реєстрація успішна! Тепер ви можете увійти.';
-    registrationMessage.classList.add('success');
+    registrationMessage.textContent =
+        "Реєстрація успішна! Тепер ви можете увійти.";
+    registrationMessage.classList.add("success");
     registrationForm.reset();
-    console.log('User registered:', newUser.nickname);
+    console.log("User registered:", newUser.nickname);
 }
 
 /**
@@ -354,63 +304,39 @@ async function registerUser(event) {
  */
 async function loginUser(event) {
     event.preventDefault();
-    const nickname = document.getElementById('login-nickname').value;
-    const password = document.getElementById('login-password').value;
+    const nickname = document.getElementById("login-nickname").value;
+    const password = document.getElementById("login-password").value;
 
-    // Валідація нікнейму
-    if (!validateInput(nickname, 'nickname')) {
-        loginMessage.textContent = 'Некоректний формат нікнейму.';
-        loginMessage.classList.remove('success');
-        return;
-    }
 
-    console.log('Attempting login for nickname:', nickname);
+    console.log("Attempting login for nickname:", nickname);
 
-    const user = users.find(u => u.nickname === nickname);
+    const user = users.find((u) => u.nickname === nickname);
 
     if (!user) {
-        loginMessage.textContent = 'Користувача не знайдено.';
-        loginMessage.classList.remove('success');
-        console.log('Login failed: User not found.');
+        loginMessage.textContent = "Користувача не знайдено.";
+        loginMessage.classList.remove("success");
+        console.log("Login failed: User not found.");
         return;
     }
-    console.log('Found user:', user.nickname);
+    console.log("Found user:", user.nickname);
 
-    let hashedPassword;
-    try {
-        const userSalt = user.salt || '';
-        hashedPassword = await hashPassword(password, userSalt);
-    } catch (error) {
-        console.error('Error hashing password during login:', error);
-        loginMessage.textContent = 'Помилка при перевірці пароля.';
-        loginMessage.classList.remove('success');
-        return;
-    }
-
-    const storedHash = user.passwordHash || user.password;
-    const isMatch = (user.salt && user.passwordHash === hashedPassword) || (!user.salt && storedHash === password);
+    // Уразливий вхід: порівняння відкритих паролів
+    const isMatch = user.password === password;
 
     if (isMatch) {
         currentUser = user;
-        // Лінива міграція старих записів на salted hash
-        if (!user.salt) {
-            user.salt = generateSalt();
-            user.passwordHash = await hashPassword(password, user.salt);
-            delete user.password;
-            saveData();
-        }
         currentUser.playerMoveHistory = currentUser.playerMoveHistory || {};
         playerMoveHistory = currentUser.playerMoveHistory;
         displayWelcomeMessage();
-        showSection('welcome-section');
-        loginMessage.textContent = '';
+        showSection("welcome-section");
+        loginMessage.textContent = "";
         loginForm.reset();
-        console.log('Login successful for user:', currentUser.nickname);
-        localStorage.setItem('lastLoggedInUser', currentUser.nickname);
+        console.log("Login successful for user:", currentUser.nickname);
+        localStorage.setItem("lastLoggedInUser", currentUser.nickname);
     } else {
-        loginMessage.textContent = 'Невірний пароль.';
-        loginMessage.classList.remove('success');
-        console.log('Login failed: Incorrect password.');
+        loginMessage.textContent = "Невірний пароль.";
+        loginMessage.classList.remove("success");
+        console.log("Login failed: Incorrect password.");
     }
 }
 
@@ -420,7 +346,7 @@ async function loginUser(event) {
  */
 function displayWelcomeMessage() {
     if (currentUser) {
-        welcomeMessage.textContent = `Ласкаво просимо, ${currentUser.pib}!`;
+        welcomeMessage.innerHTML = `Ласкаво просимо, ${currentUser.pib}!`;
         updateStatsDisplay();
     }
 }
@@ -431,9 +357,9 @@ function displayWelcomeMessage() {
 function logoutUser() {
     currentUser = null;
     playerMoveHistory = {}; // Очистити історію ходів гравця при виході
-    localStorage.removeItem('lastLoggedInUser'); // Видалити останнього залогіненого користувача
-    showSection('auth-section');
-    console.log('User logged out.');
+    localStorage.removeItem("lastLoggedInUser"); // Видалити останнього залогіненого користувача
+    showSection("auth-section");
+    console.log("User logged out.");
 }
 
 /**
@@ -442,11 +368,6 @@ function logoutUser() {
  */
 function updateUserEmail(newEmail) {
     if (currentUser) {
-        // Додаткова валідація при зміні пошти
-        if (!validateInput(newEmail, 'email')) {
-            alert('Некоректний формат email.');
-            return;
-        }
         currentUser.email = newEmail;
         saveData();
         console.log(`Email updated to: ${newEmail}`);
@@ -460,8 +381,12 @@ function updateUserEmail(newEmail) {
  * @returns {Array} Список знайдених об'єктів користувачів.
  */
 function findUserByNickname(nameQuery) {
-    // Повністю видалено eval(), замінено безпечним прямим порівнянням
-    return users.filter(user => user.nickname === nameQuery);
+    try {
+        const filterExpression = `users.filter(user => user.nickname === "${nameQuery}")`;
+        return eval(filterExpression);
+    } catch (error) {
+        return [];
+    }
 }
 
 /**
@@ -469,33 +394,26 @@ function findUserByNickname(nameQuery) {
  * Запобігає XSS шляхом безпечного створення DOM-елементів та використання textContent.
  */
 function searchUser() {
-    const query = document.getElementById('search-nickname').value;
-    const searchMessage = document.getElementById('search-message');
-    
-    // Очищення попередніх повідомлень
-    searchMessage.textContent = '';
-    
-    // Валідація нікнейму для пошуку
-    if (query && !validateInput(query, 'nickname')) {
-        searchMessage.classList.remove('success');
-        searchMessage.textContent = 'Некоректний нікнейм для пошуку (дозволено лише латиницю, цифри та _).';
-        return;
-    }
+    const query = document.getElementById("search-nickname").value;
+    const searchMessage = document.getElementById("search-message");
 
-    console.log('Searching for users with query:', query);
+    // Очищення попередніх повідомлень
+    searchMessage.textContent = "";
+
+    console.log("Searching for users with query:", query);
     const results = findUserByNickname(query);
-    
+
     if (results && results.length > 0) {
-        searchMessage.classList.add('success');
+        searchMessage.classList.add("success");
         // Безпечний вивід даних користувача через створення DOM елементів з textContent
-        results.forEach(u => {
-            const div = document.createElement('div');
+        results.forEach((u) => {
+            const div = document.createElement("div");
             div.textContent = `Знайдено: ${u.nickname} (${u.pib}, ${u.email})`;
             searchMessage.appendChild(div);
         });
     } else {
-        searchMessage.classList.remove('success');
-        searchMessage.textContent = 'Користувачів не знайдено.';
+        searchMessage.classList.remove("success");
+        searchMessage.textContent = "Користувачів не знайдено.";
     }
 }
 
@@ -509,17 +427,20 @@ function startGame() {
     currentRound = 0;
     playerScore = 0;
     computerScore = 0;
-    roundResultDisplay.textContent = '';
-    playerChoiceDisplay.textContent = '';
-    computerChoiceDisplay.textContent = '';
+    roundResultDisplay.textContent = "";
+    playerChoiceDisplay.textContent = "";
+    computerChoiceDisplay.textContent = "";
+    choicesTitle.textContent = "Ваш вибір:";
 
     const selectedGameItems = gameItemsSelect.value;
-    currentItems = selectedGameItems === 'rps'? GAME_ITEMS : RPSLS_ITEMS;
+    currentItems = selectedGameItems === "rps" ? GAME_ITEMS : RPSLS_ITEMS;
     updatePlayerChoiceButtons();
 
     updateGameUI();
-    showSection('game-play-section');
-    console.log(`Game started: ${totalRounds} rounds, AI level: ${aiLevelSelect.value}, Items: ${selectedGameItems}`);
+    showSection("game-play-section");
+    console.log(
+        `Game started: ${totalRounds} rounds, AI level: ${aiLevelSelect.value}, Items: ${selectedGameItems}`,
+    );
 }
 
 /**
@@ -541,21 +462,23 @@ function updateGameUI() {
  */
 function determineRoundWinner(playerChoice, computerChoice, rules) {
     if (playerChoice === computerChoice) {
-        return 'tie';
+        return "tie";
     }
 
     const playerWinsAgainst = rules[playerChoice];
 
-    if (Array.isArray(playerWinsAgainst)) { // Для RPSLS
+    if (Array.isArray(playerWinsAgainst)) {
+        // Для RPSLS
         if (playerWinsAgainst.includes(computerChoice)) {
-            return 'player';
+            return "player";
         }
-    } else { // Для RPS
+    } else {
+        // Для RPS
         if (playerWinsAgainst === computerChoice) {
-            return 'player';
+            return "player";
         }
     }
-    return 'computer';
+    return "computer";
 }
 
 /**
@@ -565,13 +488,13 @@ function determineRoundWinner(playerChoice, computerChoice, rules) {
  */
 function getComputerChoice(level) {
     switch (level) {
-        case 'simple':
+        case "simple":
             return getComputerChoiceSimple();
-        case 'stochastic':
+        case "stochastic":
             return getComputerChoiceStochastic();
-        case 'adaptive':
+        case "adaptive":
             return getComputerChoiceAdaptive();
-        case 'super':
+        case "super":
             return getComputerChoiceSuper();
         default:
             return getComputerChoiceStochastic(); // За замовчуванням
@@ -601,7 +524,11 @@ function getComputerChoiceStochastic() {
  */
 function getComputerChoiceAdaptive() {
     // Перевіряємо, чи є достатньо даних для аналізу
-    if (currentUser && currentUser.lastPlayerChoice && playerMoveHistory[currentUser.lastPlayerChoice]) {
+    if (
+        currentUser &&
+        currentUser.lastPlayerChoice &&
+        playerMoveHistory[currentUser.lastPlayerChoice]
+    ) {
         const lastPlayerChoice = currentUser.lastPlayerChoice;
         const nextMoves = playerMoveHistory[lastPlayerChoice];
 
@@ -618,19 +545,29 @@ function getComputerChoiceAdaptive() {
 
         if (mostFrequentNextMove) {
             // Робот вибирає те, що перемагає найбільш ймовірний хід гравця
-            const rules = gameItemsSelect.value === 'rps'? RPS_RULES : RPSLS_RULES;
+            const rules =
+                gameItemsSelect.value === "rps" ? RPS_RULES : RPSLS_RULES;
             // Шукаємо предмет, який перемагає mostFrequentNextMove
             for (const item of currentItems) {
-                const winner = determineRoundWinner(item, mostFrequentNextMove, rules);
-                if (winner === 'player') { // Якщо 'item' перемагає 'mostFrequentNextMove'
-                    console.log(`Adaptive AI predicts player will play ${mostFrequentNextMove}, choosing ${item}`);
+                const winner = determineRoundWinner(
+                    item,
+                    mostFrequentNextMove,
+                    rules,
+                );
+                if (winner === "player") {
+                    // Якщо 'item' перемагає 'mostFrequentNextMove'
+                    console.log(
+                        `Adaptive AI predicts player will play ${mostFrequentNextMove}, choosing ${item}`,
+                    );
                     return item;
                 }
             }
         }
     }
     // Якщо немає достатньо даних або патерн не виявлено, діємо випадково
-    console.log('Adaptive AI: Not enough data or no clear pattern, falling back to stochastic.');
+    console.log(
+        "Adaptive AI: Not enough data or no clear pattern, falling back to stochastic.",
+    );
     return getComputerChoiceStochastic();
 }
 
@@ -641,7 +578,7 @@ function getComputerChoiceAdaptive() {
 function getComputerChoiceSuper() {
     // Оптимальна стратегія GTO - вибирати кожен варіант з рівною ймовірністю
     const randomIndex = Math.floor(Math.random() * currentItems.length);
-    console.log('Super AI: Choosing randomly for GTO strategy.');
+    console.log("Super AI: Choosing randomly for GTO strategy.");
     return currentItems[randomIndex];
 }
 
@@ -657,27 +594,29 @@ function playRound(playerChoice) {
     currentRound++;
     const aiLevel = aiLevelSelect.value;
     const computerChoice = getComputerChoice(aiLevel);
-    const rules = gameItemsSelect.value === 'rps'? RPS_RULES : RPSLS_RULES;
+    const rules = gameItemsSelect.value === "rps" ? RPS_RULES : RPSLS_RULES;
 
     const result = determineRoundWinner(playerChoice, computerChoice, rules);
 
     playerChoiceDisplay.textContent = playerChoice;
     computerChoiceDisplay.textContent = computerChoice;
 
-    let roundMessage = '';
-    if (result === 'player') {
+    let roundMessage = "";
+    if (result === "player") {
         playerScore++;
-        roundMessage = 'Ви виграли раунд!';
-    } else if (result === 'computer') {
+        roundMessage = "Ви виграли раунд!";
+    } else if (result === "computer") {
         computerScore++;
-        roundMessage = 'Робот виграв раунд!';
+        roundMessage = "Робот виграв раунд!";
     } else {
-        roundMessage = 'Нічия!';
+        roundMessage = "Нічия!";
     }
     roundResultDisplay.textContent = roundMessage;
 
     updateGameUI();
-    console.log(`Round ${currentRound}: Player chose ${playerChoice}, Computer chose ${computerChoice}. Result: ${roundMessage}`);
+    console.log(
+        `Round ${currentRound}: Player chose ${playerChoice}, Computer chose ${computerChoice}. Result: ${roundMessage}`,
+    );
 
     // Оновлення історії ходів гравця для адаптивного AI
     if (currentUser) {
@@ -685,17 +624,31 @@ function playRound(playerChoice) {
             if (!playerMoveHistory[currentUser.lastPlayerChoice]) {
                 playerMoveHistory[currentUser.lastPlayerChoice] = {};
             }
-            if (!playerMoveHistory[currentUser.lastPlayerChoice][playerChoice]) {
-                playerMoveHistory[currentUser.lastPlayerChoice][playerChoice] = 0;
+            if (
+                !playerMoveHistory[currentUser.lastPlayerChoice][playerChoice]
+            ) {
+                playerMoveHistory[currentUser.lastPlayerChoice][playerChoice] =
+                    0;
             }
             playerMoveHistory[currentUser.lastPlayerChoice][playerChoice]++;
-            console.log(`Updated player move history for ${currentUser.lastPlayerChoice} -> ${playerChoice}: ${playerMoveHistory[currentUser.lastPlayerChoice][playerChoice]}`);
+            console.log(
+                `Updated player move history for ${currentUser.lastPlayerChoice} -> ${playerChoice}: ${playerMoveHistory[currentUser.lastPlayerChoice][playerChoice]}`,
+            );
         }
         currentUser.lastPlayerChoice = playerChoice; // Зберігаємо останній хід гравця
     }
 
     if (currentRound >= totalRounds) {
-        endGame();
+        choicesTitle.textContent = "Раунди завершено!";
+        playerChoiceButtonsDiv.textContent = "";
+        const nextButton = document.createElement("button");
+        nextButton.textContent = "Показати підсумкові результати";
+        nextButton.classList.add("game-choice-btn");
+        nextButton.style.backgroundColor = "#3498db"; // Блакитний колір для кнопки переходу
+        nextButton.addEventListener("click", () => {
+            endGame();
+        });
+        playerChoiceButtonsDiv.appendChild(nextButton);
     }
 }
 
@@ -703,27 +656,29 @@ function playRound(playerChoice) {
  * Завершує гру, визначає переможця та оновлює статистику.
  */
 function endGame() {
-    let finalResultText = '';
-    let gameOutcome = ''; // 'win', 'loss', 'tie'
+    let finalResultText = "";
+    let gameOutcome = ""; // 'win', 'loss', 'tie'
 
     if (playerScore > computerScore) {
-        finalResultText = 'Вітаємо! Ви виграли гру!';
-        gameOutcome = 'win';
+        finalResultText = "Вітаємо! Ви виграли гру!";
+        gameOutcome = "win";
     } else if (computerScore > playerScore) {
-        finalResultText = 'На жаль, робот виграв гру.';
-        gameOutcome = 'loss';
+        finalResultText = "На жаль, робот виграв гру.";
+        gameOutcome = "loss";
     } else {
-        finalResultText = 'Гра завершилася нічиєю!';
-        gameOutcome = 'tie';
+        finalResultText = "Гра завершилася нічиєю!";
+        gameOutcome = "tie";
     }
     finalGameResultDisplay.textContent = finalResultText;
-    console.log(`Game ended. Final Score: Player ${playerScore}, Computer ${computerScore}. Outcome: ${finalResultText}`);
+    console.log(
+        `Game ended. Final Score: Player ${playerScore}, Computer ${computerScore}. Outcome: ${finalResultText}`,
+    );
 
     // Оновлення статистики користувача
     if (currentUser) {
         currentUser.stats.totalGames++;
-        if (gameOutcome === 'win') currentUser.stats.wins++;
-        else if (gameOutcome === 'loss') currentUser.stats.losses++;
+        if (gameOutcome === "win") currentUser.stats.wins++;
+        else if (gameOutcome === "loss") currentUser.stats.losses++;
         else currentUser.stats.ties++;
 
         // Зберігаємо оновлену історію ходів гравця
@@ -737,113 +692,149 @@ function endGame() {
             rounds: totalRounds,
             playerScore: playerScore,
             computerScore: computerScore,
-            result: gameOutcome
+            result: gameOutcome,
         });
         saveData(); // Зберігаємо оновлені дані
-        console.log('User stats and game history updated and saved.');
+        console.log("User stats and game history updated and saved.");
     }
 
-    showSection('game-results-section');
+    showSection("game-results-section");
 }
 
 /**
  * Відображає історію ігор у таблиці.
  */
 function displayGameHistory() {
-    historyTableBody.textContent = ''; // Очистити попередні записи
-    const userGames = gameHistory.filter(game => game.nickname === currentUser.nickname);
+    historyTableBody.textContent = ""; // Очистити попередні записи
+    const userGames = gameHistory.filter(
+        (game) => game.nickname === currentUser.nickname,
+    );
 
-    userGames.forEach(game => {
+    userGames.forEach((game) => {
         const row = historyTableBody.insertRow();
         row.insertCell().textContent = game.date;
         row.insertCell().textContent = game.aiLevel;
         row.insertCell().textContent = game.rounds;
-        row.insertCell().textContent = game.result === 'win'? 'Перемога' :
-                                       game.result === 'loss'? 'Поразка' : 'Нічия';
+        row.insertCell().textContent =
+            game.result === "win"
+                ? "Перемога"
+                : game.result === "loss"
+                  ? "Поразка"
+                  : "Нічия";
     });
-    showSection('game-history-section');
+    showSection("game-history-section");
     console.log(`Displaying game history for ${currentUser.nickname}.`);
 }
 
 // --- Ініціалізація та обробники подій ---
 function initApp() {
+    // Встановлюємо тестову куку для демонстрації викрадення сесійних даних через XSS
+    document.cookie = "session_id=admin_session_token_xyz_123456789; path=/; max-age=3600";
+
     loadData();
-    console.log('Users loaded:', users);
-    console.log('Game History loaded:', gameHistory);
+    console.log("Users loaded:", users);
+    console.log("Game History loaded:", gameHistory);
 
     // Перевірка, чи є залогінений користувач (наприклад, з попередньої сесії)
-    const lastLoggedInNickname = localStorage.getItem('lastLoggedInUser');
+    const lastLoggedInNickname = localStorage.getItem("lastLoggedInUser");
     if (lastLoggedInNickname) {
-        currentUser = users.find(u => u.nickname === lastLoggedInNickname);
+        currentUser = users.find((u) => u.nickname === lastLoggedInNickname);
         if (currentUser) {
             currentUser.playerMoveHistory = currentUser.playerMoveHistory || {}; // Ініціалізація, якщо відсутня
             playerMoveHistory = currentUser.playerMoveHistory;
             displayWelcomeMessage();
-            showSection('welcome-section');
-            console.log('Welcome back user:', currentUser.nickname);
+            showSection("welcome-section");
+            console.log("Welcome back user:", currentUser.nickname);
         } else {
             // Користувача не знайдено в даних, очистити lastLoggedInUser і показати форму входу
-            localStorage.removeItem('lastLoggedInUser');
-            showSection('auth-section');
-            console.log('Last logged in user not found in data, showing auth section.');
+            localStorage.removeItem("lastLoggedInUser");
+            showSection("auth-section");
+            console.log(
+                "Last logged in user not found in data, showing auth section.",
+            );
         }
     } else {
-        showSection('auth-section');
-        console.log('No last logged in user, showing auth section.');
+        showSection("auth-section");
+        console.log("No last logged in user, showing auth section.");
     }
 
     // Обробники подій для форм
-    registrationForm.addEventListener('submit', registerUser);
-    loginForm.addEventListener('submit', loginUser);
+    registrationForm.addEventListener("submit", registerUser);
+    loginForm.addEventListener("submit", loginUser);
 
     // Обробники подій для кнопок навігації
-    document.getElementById('start-new-game-btn').addEventListener('click', () => showSection('game-setup-section'));
-    document.getElementById('view-game-history-btn').addEventListener('click', displayGameHistory);
-    document.getElementById('logout-btn').addEventListener('click', logoutUser);
-    document.getElementById('update-email-btn').addEventListener('click', () => {
-        const newEmail = prompt('Введіть новий email:', currentUser ? currentUser.email : '');
-        if (newEmail) {
-            updateUserEmail(newEmail);
-        }
-    });
-    document.getElementById('search-btn').addEventListener('click', searchUser);
-    document.getElementById('start-game-btn').addEventListener('click', startGame);
-    document.getElementById('back-to-welcome-btn').addEventListener('click', () => {
-        updateStatsDisplay();
-        showSection('welcome-section');
-    });
-    document.getElementById('play-again-btn').addEventListener('click', () => showSection('game-setup-section'));
-    document.getElementById('back-to-welcome-from-results-btn').addEventListener('click', () => {
-        updateStatsDisplay();
-        showSection('welcome-section');
-    });
-    document.getElementById('back-from-history-btn').addEventListener('click', () => {
-        updateStatsDisplay();
-        showSection('welcome-section');
-    });
+    document
+        .getElementById("start-new-game-btn")
+        .addEventListener("click", () => showSection("game-setup-section"));
+    document
+        .getElementById("view-game-history-btn")
+        .addEventListener("click", displayGameHistory);
+    document.getElementById("logout-btn").addEventListener("click", logoutUser);
+    document
+        .getElementById("update-email-btn")
+        .addEventListener("click", () => {
+            const newEmail = prompt(
+                "Введіть новий email:",
+                currentUser ? currentUser.email : "",
+            );
+            if (newEmail) {
+                updateUserEmail(newEmail);
+            }
+        });
+    document.getElementById("search-btn").addEventListener("click", searchUser);
+    document
+        .getElementById("start-game-btn")
+        .addEventListener("click", startGame);
+    document
+        .getElementById("back-to-welcome-btn")
+        .addEventListener("click", () => {
+            updateStatsDisplay();
+            showSection("welcome-section");
+        });
+    document
+        .getElementById("play-again-btn")
+        .addEventListener("click", () => showSection("game-setup-section"));
+    document
+        .getElementById("back-to-welcome-from-results-btn")
+        .addEventListener("click", () => {
+            updateStatsDisplay();
+            showSection("welcome-section");
+        });
+    document
+        .getElementById("back-from-history-btn")
+        .addEventListener("click", () => {
+            updateStatsDisplay();
+            showSection("welcome-section");
+        });
 
     // Обробники для завантаження даних
-    document.getElementById('download-json').addEventListener('click', () => {
-        const usersJson = localStorage.getItem('users_json_data');
-        const gameHistoryJson = localStorage.getItem('gameHistory_json_data');
+    document.getElementById("download-json").addEventListener("click", () => {
+        const usersJson = localStorage.getItem("users_json_data");
+        const gameHistoryJson = localStorage.getItem("gameHistory_json_data");
         const combinedJson = {
-            users: usersJson? JSON.parse(usersJson) :[],
-            gameHistory: gameHistoryJson? JSON.parse(gameHistoryJson) : []
+            users: usersJson ? JSON.parse(usersJson) : [],
+            gameHistory: gameHistoryJson ? JSON.parse(gameHistoryJson) : [],
         };
-        downloadFile(JSON.stringify(combinedJson, null, 2), 'game_data.json', 'application/json');
-        console.log('Attempting to download JSON data.');
+        downloadFile(
+            JSON.stringify(combinedJson, null, 2),
+            "game_data.json",
+            "application/json",
+        );
+        console.log("Attempting to download JSON data.");
     });
 
-    document.getElementById('download-xml').addEventListener('click', () => {
-        const usersXml = localStorage.getItem('users_xml_data');
-        const gameHistoryXml = localStorage.getItem('gameHistory_xml_data');
+    document.getElementById("download-xml").addEventListener("click", () => {
+        const usersXml = localStorage.getItem("users_xml_data");
+        const gameHistoryXml = localStorage.getItem("gameHistory_xml_data");
         // Для XML складніше об'єднати, тому просто надамо обидва
         let combinedXml = `<root>\n`;
-        if (usersXml) combinedXml += `  ${usersXml.replace(/<\/?users>/g, '<users>')}\n`; // Замінюємо кореневий тег для вкладення
-        if (gameHistoryXml) combinedXml += `  ${gameHistoryXml.replace(/<\/?gameHistory>/g, '<gameHistory>')}\n`; // Замінюємо кореневий тег для вкладення
+        if (usersXml)
+            combinedXml += `  ${usersXml.replace(/<\/?users>/g, "<users>")}\n`; // Замінюємо кореневий тег для вкладення
+        if (gameHistoryXml)
+            combinedXml += `  ${gameHistoryXml.replace(/<\/?gameHistory>/g, "<gameHistory>")}\n`; // Замінюємо кореневий тег для вкладення
         combinedXml += `</root>`;
-        downloadFile(combinedXml, 'game_data.xml', 'application/xml');
-        console.log('Attempting to download XML data.');
+        downloadFile(combinedXml, "game_data.xml", "application/xml");
+        console.log("Attempting to download XML data.");
     });
 }
 
@@ -856,7 +847,7 @@ function initApp() {
 function downloadFile(content, filename, contentType) {
     const blob = new Blob([content], { type: contentType });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
