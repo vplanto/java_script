@@ -1,4 +1,14 @@
+---
+title: "Workshop: Bad UI Battle (Інженерний Челендж)"
+type: workshop
+module: 1
+prerequisites:
+  - "02_css_layout"
+---
+
 # Workshop: Bad UI Battle (Інженерний Челендж)
+> **Академічна доброчесність.** Дотримуйтесь [Декларації](../DISCLAIMER.md). Використання ШІ — згідно з [Vibe Coding Protocol](../n04_vibe_coding_protocol.md).
+
 
 **Місія:** Зробити користувачу боляче.
 **Прихована мета:** Досконало вивчити DOM Events, математику в JS та браузерні API.

@@ -1,4 +1,14 @@
+---
+title: "Воркшоп 7: Weather API"
+type: workshop
+module: 4
+prerequisites:
+  - "07_http_rest"
+---
+
 # Воркшоп 7: Робота з реальними API (Weather Dashboard)
+> **Академічна доброчесність.** Дотримуйтесь [Декларації](../DISCLAIMER.md). Використання ШІ — згідно з [Vibe Coding Protocol](../n04_vibe_coding_protocol.md).
+
 
 Ми виходимо за межі "пісочниці". Ваш браузер починає спілкуватися з серверами на іншому кінці світу.
 Ми створимо погодний дашборд, використовуючи **OpenWeatherMap API**.

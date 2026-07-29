@@ -1,4 +1,14 @@
+---
+title: "Workshop 2: Monte Carlo & Main Thread"
+type: workshop
+module: 2
+prerequisites:
+  - "04_browser_internals"
+---
+
 # Workshop 2: Monte Carlo & Main Thread. Як "покласти" браузер (і як його врятувати)
+> **Академічна доброчесність.** Дотримуйтесь [Декларації](../DISCLAIMER.md). Використання ШІ — згідно з [Vibe Coding Protocol](../n04_vibe_coding_protocol.md).
+
 
 У цьому воркшопі ми поєднаємо математику, графіку та розуміння того, як працює процесор. Ми пройдемо шлях від "зависання" сторінки до справжньої багатопотоковості.
 
@@ -217,12 +227,9 @@ startBtn.addEventListener("click", () => {
 > **Чому зараз нічого не малюється на Canvas?**
 > Ви могли помітити, що на відміну від першого прикладу (Синхронного підходу), тут `canvas` залишається пустим. Це очікувано! Web Workers працюють в ізольованому середовищі і **не мають доступу до DOM-дерева** (вони не можуть керувати HTML-елементами). Щоб відмалювати розрахунки воркера, нам доведеться порціями передавати координати назад у головний потік через `postMessage` — саме це вам потрібно буде реалізувати в наступному практичному завданні (Challenge 3).
 
-### 📚 Корисна документація (MDN)
+### 📚 Корисна документація
 
-*   [Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) — загальний посібник з використання.
-*   [self.onmessage (message_event)](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/message_event) — як воркер "слухає" вхідні дані. `self` у контексті воркера вказує на його власний глобальний простір (DedicatedWorkerGlobalScope).
-*   [postMessage()](https://developer.mozilla.org/en-US/docs/Web/API/Worker/postMessage) — метод обміну даними (відправка повідомлень).
-*   [performance.now()](https://developer.mozilla.org/en-US/docs/Web/API/Performance/now) — мілісекундний таймер високої роздільної здатності для замірів швидкості.
+Див. [реєстр джерел](../sources.md): **[2] MDN Web Docs**, **[14] Web Workers**.
 
 -----
 

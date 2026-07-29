@@ -1,4 +1,14 @@
+---
+title: "Лекція 01b: Як працюють браузери, Rendering Path та Форми"
+type: lecture
+module: 1
+prerequisites:
+  - "01a_html_dom"
+---
+
 # Лекція 01b: Як працюють браузери, Rendering Path та Форми (частина 2)
+> **Академічна доброчесність.** Дотримуйтесь [Декларації](DISCLAIMER.md). Використання ШІ — згідно з [Vibe Coding Protocol](n04_vibe_coding_protocol.md).
+
 
 **Тип заняття:** Лекція / Deep Dive  
 **Попередня частина:** [01a — HTML, DOM та стандарти](01a_html_dom.md)
@@ -53,7 +63,9 @@
 Сучасний Chrome — це не одна програма, це міні-ОС.
 
 ### Архітектура: Багатопроцесна модель Chrome
-**Джерело:** [Inside look at modern web browser (Part 1)](https://developer.chrome.com/blog/inside-browser-part1)
+**Джерело:** [Inside look at modern web browser (Part 1)][10] — див. [реєстр джерел](sources.md).
+
+[10]: sources.md#10-chrome-developers--inside-look-at-modern-web-browser
 
 [Локальна демо-версія: Як працює браузер](how_do_browsers_work/index.html)
 

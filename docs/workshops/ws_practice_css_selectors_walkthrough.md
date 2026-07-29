@@ -1,4 +1,6 @@
 # Практикум (walkthrough): комбінатори та псевдокласи на Wikipedia
+> **Академічна доброчесність.** Дотримуйтесь [Декларації](../DISCLAIMER.md). Використання ШІ — згідно з [Vibe Coding Protocol](../n04_vibe_coding_protocol.md).
+
 
 **Формат:** одна сесія у браузері на [Wikipedia](https://www.wikipedia.org/) (стаття українською — зручніше читати текст).
 

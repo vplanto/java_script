@@ -1,0 +1,5 @@
+title: "Основи Інтернет-технологій"
+lang: uk
+markdown: kramdown
+exclude:
+  - exam_answers.md

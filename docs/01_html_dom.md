@@ -1,4 +1,14 @@
+---
+title: "Лекція 01: HTML як Дерево (DOM), Browser Internals та Форми"
+type: lecture
+module: 1
+prerequisites:
+  - "00_manifesto"
+---
+
 # Лекція 01: HTML як Дерево (DOM), Browser Internals та Форми
+> **Академічна доброчесність.** Дотримуйтесь [Декларації](DISCLAIMER.md). Використання ШІ — згідно з [Vibe Coding Protocol](n04_vibe_coding_protocol.md).
+
 
 **Тип заняття:** Лекція / Deep Dive  
 **Необхідний бекграунд:** C++ (Memory, Pointers, Threads)  
