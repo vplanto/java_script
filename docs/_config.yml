@@ -1,5 +1,22 @@
 title: "Основи Інтернет-технологій"
+description: "Web Engineering — від DOM до мережі та безпеки"
 lang: uk
 markdown: kramdown
+highlighter: rouge
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "default"
+
 exclude:
   - exam_answers.md
+  - Gemfile
+  - Gemfile.lock

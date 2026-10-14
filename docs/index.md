@@ -1,3 +1,8 @@
+---
+layout: default
+hub: true
+---
+
 # Основи Інтернет-технологій
 ## Web Engineering: від «Hello World» до архітектури
 
@@ -7,10 +12,14 @@
 
 ## Навчально-методичний комплект (НМК)
 
+<div class="hub-block" markdown="1">
+
 - [Методологія курсу](methodology.md) — траєкторія модулів, оцінювання, покриття програми
 - [Реєстр джерел](sources.md) — офіційні специфікації та посилання [1]…[N]
 - [Декларація академічної доброчесності](DISCLAIMER.md) — Закон № 4742-IX, авторська декларація, політика ШІ
 - [Пул екзаменаційних питань](exam.md)
+
+</div>
 
 ---
 
@@ -114,9 +123,13 @@
 
 ## Інструменти та додаткові матеріали
 
+<div class="hub-block" markdown="1">
+
 - [Налаштування середовища (VS Code, Git)](n01_setup.md)
 - [Шпаргалка по Markdown](n02_markdown.md)
 - [Git Guide: як не втратити код і здати лабу](n03_git_basics.md)
 - [Лабораторна: Hive Mind Starter (n05)](workshops/hive/n05_hive_mind_starter_lab.md)
 - [FAQ & Troubleshooting: типові помилки](faq_troubleshooting.md)
 - [TODO: план розробки курсу](todo.md)
+
+</div>
